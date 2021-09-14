@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import { Application } from 'express';
 import Routes from '@interfaces/routes.interface';
 import express from 'express';
-
+import dbConnection from './config/db.config';
 
 const dotenv = require('custom-env');
 
@@ -25,6 +25,7 @@ export default class App {
 
     public listen(): void {
         this.app.listen(this.PORT, async () => {
+            await dbConnection();
             console.debug(`=================================`);
             console.debug(`======= ENV: ${this.env} =======`);
             console.debug(`🚀 server running on http://${this.HOST}:${this.PORT}`);
