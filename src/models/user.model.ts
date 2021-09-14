@@ -5,7 +5,7 @@ export default class UserEntity {
     @PrimaryGeneratedColumn('uuid')
     public id: string;
 
-    @Column()
+    @Column({ unique: true })
     public empNumber: number;
 
     @Column()

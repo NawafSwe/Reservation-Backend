@@ -1,9 +1,21 @@
-import {Router, Request, Response} from 'express';
+import { Router, Request, Response } from 'express';
 import Routes from '@interfaces/routes.interface'
 
-const indexRouter: Router = Router();
-indexRouter.get(`/users`, (req: Request, res: Response) => {
-    res.status(200).json({$message: 'Server is Alive'});
+const router: Router = Router();
+router.get(`/`, (req: Request, res: Response) => {
+    try {
+
+    } catch (error) {
+        console.error(`error occurred at route, ${req.url}, error`);
+    }
 });
-export default {router: indexRouter, path: '/users'} as Routes;
+
+router.post('/', async (req: Request, res: Response) => {
+    try {
+
+    } catch (error) {
+        console.error(`error occurred at route, ${req.url}, error`);
+    }
+})
+export default { router: router, path: '/users' } as Routes;
 
