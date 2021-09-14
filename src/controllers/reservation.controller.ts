@@ -34,13 +34,14 @@ export const reserveTable = async (id: string, reservationData: Reservation) => 
         }
 
         // check if table have any reservation conflicts 
-        const conflictReservations = await reservationServices.findConflictReservations(findRestaurant.tables, reservationData);
+        const conflictReservations = await reservationServices.findConflictReservations(findRestaurant, reservationData);
         if (conflictReservations?.length > 0) {
             // reject 
             console.log(`conflictReservations, `, conflictReservations);
             return;
         }
 
+        // choose table before enter create reservation controller
         // else proceed 
         // do business logic before moving ahead, check, if the reservation conflicts with restaurant working hours, then if the table have reservation at that time.
         const reservationResponse = await reservationServices.createReservation(findRestaurant, reservationData);
@@ -74,6 +75,16 @@ export const deleteReservationById = async (id: string) => {
     try {
         return await reservationServices.deleteReservationById(id);
     } catch (error) {
-        console.error(`error occurred at reservation controllers, at deleteReservationById, error: ${error}`)
+        console.error(`error occurred at reservation controllers, at deleteReservationById, error: ${error}`);
     }
 };
+
+export const listAllAvailableReservations = async (id: string, reservationData: Reservation) => {
+    try {
+        const findRestaurant = await restaurantServices.getRestaurantById(id);
+        const response = await reservationServices.listAllAvailableReservations(findRestaurant, reservationData);
+        return response;
+    } catch (error) {
+        console.error(`error occurred at reservation controllers, at listAllAvailableReservations, error: ${error}`)
+    }
+}

@@ -3,6 +3,7 @@ import Routes from '@interfaces/routes.interface';
 import * as tableControllers from '../controllers/tables.controller';
 
 const router: Router = Router();
+
 router.get(`/`, async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getAllTables();
@@ -12,7 +13,7 @@ router.get(`/`, async (req: Request, res: Response) => {
     }
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post(`/`, async (req: Request, res: Response) => {
     try {
         const restaurantID = req.body.restaurantId;
         delete req.body.restaurantId;
@@ -25,7 +26,7 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getTableById(req.params.id);
         res.status(200).json(response);
@@ -34,7 +35,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.updateTableById(req.params.id, req.body);
         res.status(200).json(response);
@@ -43,7 +44,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.deleteTableById(req.params.id);
         res.status(200).json(response);
@@ -52,5 +53,5 @@ router.delete('/:id', async (req: Request, res: Response) => {
         console.error(`error occurred at route, ${req.path}, error`);
     }
 })
-export default { router: router, path: '/tables' } as Routes;
+export default { router: router, path: 'tables' } as Routes;
 

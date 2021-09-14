@@ -23,7 +23,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/', async (req: Request, res: Response) => {
+router.post(`/`, async (req: Request, res: Response) => {
     try {
 
         const response = await controllers.createUser(req.body);
@@ -34,7 +34,7 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.updateUserById(req.params.id, req.body);
         res.status(200).json(response);
@@ -43,7 +43,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteUserById(req.params.id);
         res.status(200).json(response);
@@ -52,5 +52,5 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
 });
 
-export default { router: router, path: '/users' } as Routes;
+export default { router: router, path: 'users' } as Routes;
 

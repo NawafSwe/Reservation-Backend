@@ -7,6 +7,10 @@ export default class TableEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    // a table has a number
+    @Column({ unique: true })
+    tableNumber: number;
+    // represents the number of seats 
     @Column({ nullable: false })
     capacity: number;
 

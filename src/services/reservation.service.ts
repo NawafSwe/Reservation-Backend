@@ -42,10 +42,10 @@ export const getAllReservations = async (skip?: number, take?: number, period?: 
 
 export const createReservation = async (restaurant: Restaurant, reservation: Reservation): Promise<Reservation | never> => {
     try {
-        const findTable: Table = pickTableForReservation(restaurant.tables, reservation);
+        const findTable: Array<Table> = await suitableTables(reservation, restaurant);
         if (findTable) {
             const reservationRepository = getRepository(Reservation);
-            const reservationCreationResult = reservationRepository.create({ ...reservation, table: findTable, createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
+            const reservationCreationResult = reservationRepository.create({ ...reservation, table: findTable[0], createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
             return await reservationRepository.save(reservationCreationResult);
         }
         else return null;
@@ -85,36 +85,78 @@ export const deleteReservationById = async (id: string): Promise<DeleteResult | 
     }
 };
 
-export const findConflictReservations = async (tables: Array<Table>, reservationDetails: Reservation): Promise<Array<Reservation | never>> => {
+export const findConflictReservations = async (restaurant: Restaurant, reservationDetails: Reservation): Promise<Array<Reservation | never>> => {
     // ===> query where starting == given starting, ending === giving ending;
     // ===> starting date != existing starting date of reservation
     // ===> ending date of existing reservation can equal starting date of new reservation 
     // ===> ending date cannot be equal to existing ending date of reservation 
     try {
-        let selectedTable: Table = pickTableForReservation(tables, reservationDetails);
-        if (selectedTable) {
-            return await getRepository(Reservation).find(
-                {
-                    where: [
-                        // counting all corresponding times
-                        { table: selectedTable, staringHoursDate: reservationDetails.staringHoursDate, endingHoursDate: reservationDetails.endingHoursDate },
-                        { table: selectedTable, staringHoursDate: reservationDetails.staringHoursDate },
-                        { table: selectedTable, endingHoursDate: reservationDetails.endingHoursDate },
-                    ]
-                });
+
+        let listOfTables = await suitableTables(reservationDetails, restaurant);
+        const conflictedReservations: Array<Reservation> = [];
+        if (listOfTables.length > 0) {
+            for (const table of listOfTables) {
+                const reservationConflicts = await getRepository(Reservation).find(
+                    {
+                        where: [
+                            // counting all corresponding times
+                            { table: table, staringHoursDate: reservationDetails.staringHoursDate, endingHoursDate: reservationDetails.endingHoursDate },
+                            { table: table, staringHoursDate: reservationDetails.staringHoursDate },
+                            { table: table, endingHoursDate: reservationDetails.endingHoursDate },
+                        ]
+                    });
+                if (reservationConflicts.length > 0) {
+                    conflictedReservations.push(...reservationConflicts);
+                }
+            }
+            return conflictedReservations;
         }
-        else return [];
+        return conflictedReservations;
     } catch (error) {
-        console.error(`error occurred at tables services, at findConflictReservations, error: ${error}`);
+        console.error(`error occurred at reservations services, at findConflictReservations, error: ${error}`);
     }
 };
 
-const pickTableForReservation = (tables: Array<Table>, reservationDetails: Reservation): Table | null => {
-    let selectedTable: Table;
 
-    for (const table of tables) {
-        // either table full or one seat empty to maximize profit
-        if (table.capacity === reservationDetails.numberOfClients + 1 || table.capacity === reservationDetails.numberOfClients) selectedTable = table;
+export const listAllAvailableReservations = async (restaurant: Restaurant, reservationConditions: Reservation) => {
+    try {
+        const pickTableForReservationResponse = await suitableTables(reservationConditions, restaurant);
+        if (!pickTableForReservationResponse) {
+            console.error(`no tables found all full`);
+            return;
+        }
+        let availableTimeSlots: any = [];
+        console.log(pickTableForReservationResponse);
+        for (const table of pickTableForReservationResponse) {
+            // means there is no reservations so from now till the end of the restaurant's working hour should be available
+            if (table.reservations.length === 0) {
+                availableTimeSlots.push({
+                    table: { ...table },
+                    availability: [`${dayjs(new Date()).format('HH:mm')} - ${dayjs(restaurant.endingWorkingHoursDate).format('HH:mm')}`]
+                })
+            } else {
+                // do logic exclude times if there are reservations 
+            }
+        }
+        return availableTimeSlots;
+    } catch (error) {
+        console.error(`error occurred at reservations service, at listAllAvailableReservations, error: ${error}`);
     }
-    return selectedTable;
+}
+
+const suitableTables = async (reservationDetails: Reservation, restaurant: Restaurant): Promise<Array<Table> | never> => {
+    try {
+        // maximize the profits 🚀
+        const numberOfSeats = reservationDetails.numberOfClients + 1;
+        // find tables with proper seats 
+        const tables: Array<Table> = await getRepository(Table).find({
+            where: { capacity: numberOfSeats, restaurant: restaurant },
+            relations: ['reservations']
+        });
+        return tables;
+    } catch (error) {
+        console.error(`error occurred, at reservations services, at suitableTables, error: ${error}`);
+    }
 };
+
+

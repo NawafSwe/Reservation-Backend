@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import Routes from '@interfaces/routes.interface';
 import * as controllers from '../controllers/restaurants.controller';
 const router: Router = Router();
+
 router.get(`/`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.getAllRestaurants();
@@ -10,7 +11,7 @@ router.get(`/`, async (req: Request, res: Response) => {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
 });
-router.post('/', async (req: Request, res: Response) => {
+router.post(`/`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.createRestaurant(req.body);
         res.status(201).json(response);
@@ -19,7 +20,7 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.getRestaurantById(req.params.id);
         res.status(200).json(response);
@@ -28,7 +29,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteRestaurantById(req.params.id);
         res.status(200).json(response);
@@ -37,7 +38,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.updateRestaurantById(req.params.id, req.body);
         res.status(200).json(response);
@@ -46,4 +47,4 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-export default { router: router, path: '/restaurants' } as Routes;
+export default { router: router, path: 'restaurants' } as Routes;

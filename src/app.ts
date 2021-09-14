@@ -36,7 +36,7 @@ export default class App {
 
     private initRoutes(routes: Array<Routes>): void {
         for (let router of routes)
-            this.app.use(router.path, router.router);
+            this.app.use(`/${router.path}`, router.router);
     }
 
     private configApp(): void {
