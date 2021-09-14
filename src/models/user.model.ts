@@ -9,6 +9,9 @@ export default class UserEntity {
     @Column({ unique: true })
     public empNumber: number;
 
+    @Column({ unique: true })
+    public username: string;
+
     @Column()
     public password: string;
 
@@ -16,11 +19,11 @@ export default class UserEntity {
     @Column({ default: Roles.BASIC })
     public role: Roles;
 
-    async hashPassword(): Promise<void> {
+    public async hashPassword(): Promise<void> {
         this.password = await bcrypt.hash(this.password, 8)
     }
 
-    async isValidPassword(password: string): Promise<boolean> {
+    public async isValidPassword(password: string): Promise<boolean> {
         return await bcrypt.compare(password, this.password);
     }
 

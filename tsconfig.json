@@ -23,15 +23,15 @@
         "importHelpers": true,
         "baseUrl": "./src",
         "paths": {
-          "@/*": ["*"],
-          "@controllers/*": ["controllers/*"],
-          "@dtos/*": ["dtos/*"],
+          "/*": ["*"],
+          "controllers/*": ["controllers/*"],
+          "dtos/*": ["dtos/*"],
           "@interfaces/*": ["interfaces/*"],
-          "@middlewares/*": ["middlewares/*"],
-          "@models/*": ["models/*"],
-          "@routes/*": ["routes/*"],
-          "@services/*": ["services/*"],
-          "@utils/*": ["utils/*"]
+          "middlewares/*": ["middlewares/*"],
+          "models/*": ["models/*"],
+          "routes/*": ["routes/*"],
+          "services/*": ["services/*"],
+          "utils/*": ["utils/*"]
         }
       },
       "include": ["src/**/*.ts", "src/**/*.json", "*.env"],

@@ -1,7 +1,8 @@
 import { Roles } from '../utils/types/roles.types';
-import { Min, IsInt, Max, Contains, ValidateIf } from 'class-validator';
+import { Min, IsInt, Max, Contains, ValidateIf, isNotEmpty } from 'class-validator';
 export default class UserDto {
     public id: string;
+    public username:string;
     @IsInt()
     @Min(4, { message: 'Employee number must be exactly 4 digits' })
     @Max(4, { message: 'Employee number must be exactly 4 digits' })

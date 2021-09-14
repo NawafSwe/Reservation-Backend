@@ -49,3 +49,17 @@ export const deleteUserById = async (id: string): Promise<DeleteResult | never> 
     }
 
 };
+
+export const getUserByUsername = async (username: string): Promise<User | never> => {
+    try {
+        const response = await getRepository(User).findOneOrFail({
+            where: {
+                username: username
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error(`error occurred at user services at getUserByUsername, error: ${error}`);
+        // TODO: return with status 
+    }
+}

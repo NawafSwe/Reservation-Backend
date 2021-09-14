@@ -1,5 +1,5 @@
-import UserDto from '@/dtos/user.dto';
-import { Roles } from '@/utils/types/roles.types';
+import UserDto from '../dtos/user.dto';
+import { Roles } from '../utils/types/roles.types';
 import { Request, Response, NextFunction } from 'express';
 import { getUserById } from '../services/users.service';
 
