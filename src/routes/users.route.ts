@@ -25,6 +25,7 @@ router.post('/', async (req: Request, res: Response) => {
     try {
 
         const response = await controllers.createUser(req.body);
+        // if user created then send the token in the headers
         res.status(201).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error`);
