@@ -13,7 +13,7 @@ export default class UserEntity {
     public password: string;
 
     // if was not specified then consider as basic emp
-    @Column({ default: Roles.BASIC })
+    @Column({ default: Roles.EMPLOYEE })
     public role: Roles;
 
 }
