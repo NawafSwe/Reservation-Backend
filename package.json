@@ -4,7 +4,12 @@
   "description": "Backend system solve restaurant reservation problem",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --testTimeout=600000 --runInBand --coverage",
+    "start:dev": "NODE_ENV=development nodemon src/index.ts",
+    "start:prod": "NODE_ENV=production node dist/index.js",
+    "start:staging": "NODE_ENV=staging node dist/index.js",
+    "docker:dev": "docker-compose up -d --build",
+    "stop:docker-dev": "docker-compose down --volumes"
   },
   "repository": {
     "type": "git",
