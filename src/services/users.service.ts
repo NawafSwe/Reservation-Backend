@@ -12,7 +12,7 @@ export const getAllUsers = async (): Promise<Array<User> | never> => {
 
 export const getUserById = async (id: string): Promise<User | never> => {
     try {
-        const response = await getRepository(User).findOne(id);
+        const response = await getRepository(User).findOneOrFail(id);
         return response;
     } catch (error) {
         console.error(`error occurred at user services at, getUserById function, error: ${error}`);

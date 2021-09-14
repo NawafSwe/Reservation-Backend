@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Roles } from '../utils/types/roles.types';
+import bcrypt from 'bcryptjs';
 @Entity()
 export default class UserEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -13,6 +14,14 @@ export default class UserEntity {
 
     // if was not specified then consider as basic emp
     @Column({ default: Roles.BASIC })
-    public role: Roles
+    public role: Roles;
+
+    async hashPassword(): Promise<void> {
+        this.password = await bcrypt.hash(this.password, 8)
+    }
+
+    async isValidPassword(password: string): Promise<boolean> {
+        return await bcrypt.compare(password, this.password);
+    }
 
 }
