@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import Routes from '@interfaces/routes.interface';
 import * as controllers from '../controllers/user.controller';
-
+import { checkRole } from '../middlewares/checkRole.middleware';
+import { checkJwt } from '../middlewares/checkToken.middleware';
+import { Roles } from '../utils/types/roles.types'
 const router: Router = Router();
-router.get(`/`, async (req: Request, res: Response) => {
+router.get(`/`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getAllUsers();
         res.status(200).json(response);
