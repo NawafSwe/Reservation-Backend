@@ -1,4 +1,4 @@
-import { DeleteResult, getRepository } from 'typeorm';
+import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
 import Restaurant from '../models/restaurant.model';
 
 
@@ -43,4 +43,12 @@ export const deleteRestaurantById = async (id: string): Promise<DeleteResult | n
     }
 };
 
-export const updateRestaurantById = async () => { };
+export const updateRestaurantById = async (id: string, body: Restaurant): Promise<UpdateResult | never> => {
+    try {
+        const response = await getRepository(Restaurant).update(id, body);
+        return response;
+
+    } catch (error) {
+        console.error(`error occurred, at restaurant services at updateRestaurantById function, error: ${error}`);
+    }
+};
