@@ -50,16 +50,16 @@ export const deleteUserById = async (id: string): Promise<DeleteResult | never> 
 
 };
 
-export const getUserByUsername = async (username: string): Promise<User | never> => {
+export const getUserByEmployeeNumber = async (number: number): Promise<User | never> => {
     try {
         const response = await getRepository(User).findOneOrFail({
             where: {
-                username: username
+                empNumber: number
             }
         });
         return response;
     } catch (error) {
-        console.error(`error occurred at user services at getUserByUsername, error: ${error}`);
+        console.error(`error occurred at user services at getUserByEmployeeNumber, error: ${error}`);
         // TODO: return with status 
     }
 }

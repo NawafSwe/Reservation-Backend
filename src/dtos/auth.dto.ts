@@ -1,5 +1,5 @@
 export default class AuthDto {
-    public username: string;
+    public empNumber: number;
     public password: string;
 
 }

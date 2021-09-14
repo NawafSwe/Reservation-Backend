@@ -1,13 +1,12 @@
-import UserDto from '../dtos/user.dto';
 import { Roles } from '../utils/types/roles.types';
 import { Request, Response, NextFunction } from 'express';
 import { getUserById } from '../services/users.service';
-
+import User from '../models/user.model';
 
 export const checkRole = (roles: Array<Roles>) => async (req: Request, res: Response, next: NextFunction) => {
     // after we have checked user is signed in then get his id to check his role 
     const id = res.locals.jwtPayload.userId;
-    let findUser: UserDto;
+    let findUser: User;
     try {
         findUser = await getUserById(id);
         if (!findUser) {

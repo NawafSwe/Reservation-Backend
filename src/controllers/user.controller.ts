@@ -1,6 +1,6 @@
 import * as userServices from '../services/users.service';
 import UserDto from '../dtos/user.dto';
-
+import { hashPassword } from '../utils/password.util';
 export const getAllUsers = async () => {
     try {
         const response = await userServices.getAllUsers();
@@ -21,6 +21,8 @@ export const getUserById = async (id: string) => {
 export const createUser = async (user: UserDto) => {
     try {
         // check if user exist or no 
+        // hash password
+        user.password = await hashPassword(user.password)
         const response = await userServices.createUser(user);
         return response;
     } catch (error) {
