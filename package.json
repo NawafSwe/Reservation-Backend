@@ -1,0 +1,27 @@
+{
+  "name": "reservation-backend",
+  "version": "1.0.0",
+  "description": "Backend system solve restaurant reservation problem",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NawafSwe/Reservation-Backend.git"
+  },
+  "keywords": [
+    "Backend",
+    "system",
+    "nodejs",
+    "Sary",
+    "expressjs",
+    "postgresql"
+  ],
+  "author": "Nawaf Alsharqi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NawafSwe/Reservation-Backend/issues"
+  },
+  "homepage": "https://github.com/NawafSwe/Reservation-Backend#readme"
+}
