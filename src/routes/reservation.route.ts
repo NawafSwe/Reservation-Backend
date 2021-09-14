@@ -30,11 +30,9 @@ router.get(`/:id`, async (req: Request, res: Response) => {
     }
 });
 
-router.post(``, async (req: Request, res: Response) => {
+router.post(`/:id`, async (req: Request, res: Response) => {
     try {
-        const restaurantId = req.body.restaurantId;
-        delete req.body.restaurantId;
-        const response = await reservationControllers.reserveTable(restaurantId, req.body);
+        const response = await reservationControllers.reserveTable(req.params.tableId, req.body);
         res.status(201).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);

@@ -3,7 +3,10 @@ import Reservation from "../models/reservation.model";
 import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
 import Table from '../models/table.model';
 import Restaurant from "../models/restaurant.model";
+import * as tableServices from './table.service';
 import dayjs from "dayjs";
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 /**
  * @param skip where from entities should be taken.
  * @param take max number of entities should be taken.
@@ -11,7 +14,6 @@ import dayjs from "dayjs";
  * @description finding all reservations based on given period or fetch for today 
  */
 
-// TODO: deleted status false 
 export const getAllReservations = async (skip?: number, take?: number, period?: Date): Promise<any | never> => {
     try {
 
@@ -40,15 +42,13 @@ export const getAllReservations = async (skip?: number, take?: number, period?: 
 
 };
 
-export const createReservation = async (restaurant: Restaurant, reservation: Reservation): Promise<Reservation | never> => {
+export const createReservation = async (table: Table, reservation: Reservation): Promise<Reservation | never> => {
     try {
-        const findTable: Array<Table> = await suitableTables(reservation, restaurant);
-        if (findTable) {
-            const reservationRepository = getRepository(Reservation);
-            const reservationCreationResult = reservationRepository.create({ ...reservation, table: findTable[0], createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
-            return await reservationRepository.save(reservationCreationResult);
-        }
-        else return null;
+        const reservationRepository = getRepository(Reservation);
+        const reservationCreationResult = reservationRepository.create({ ...reservation, table: table, createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
+        return await reservationRepository.save(reservationCreationResult);
+
+
     } catch (error) {
         console.error(`error occurred at reservation services, at createReservation, error: ${error}`);
     }
@@ -74,7 +74,7 @@ export const updateReservationById = async (id: string, body: Reservation): Prom
     }
 };
 
-// TODO: soft delete, to keep record in 
+
 export const deleteReservationById = async (id: string): Promise<DeleteResult | never> => {
     try {
         const reservationRepository = getRepository(Reservation);
@@ -121,21 +121,25 @@ export const findConflictReservations = async (restaurant: Restaurant, reservati
 export const listAllAvailableReservations = async (restaurant: Restaurant, reservationConditions: Reservation) => {
     try {
         const pickTableForReservationResponse = await suitableTables(reservationConditions, restaurant);
+
         if (!pickTableForReservationResponse) {
-            console.error(`no tables found all full`);
             return;
         }
-        let availableTimeSlots: any = [];
+        const availableTimeSlots: any = {};
+        availableTimeSlots.tables = [];
         console.log(pickTableForReservationResponse);
         for (const table of pickTableForReservationResponse) {
             // means there is no reservations so from now till the end of the restaurant's working hour should be available
             if (table.reservations.length === 0) {
-                availableTimeSlots.push({
-                    table: { ...table },
-                    availability: [`${dayjs(new Date()).format('HH:mm')} - ${dayjs(restaurant.endingWorkingHoursDate).format('HH:mm')}`]
-                })
+                availableTimeSlots.tables.push({
+                    table: {
+                        ...table,
+                        availability: [`${dayjs(new Date()).format('HH:mm')} - ${dayjs(restaurant.endingWorkingHoursDate).format('HH:mm')}`]
+                    },
+
+                });
             } else {
-                // do logic exclude times if there are reservations 
+                // TODO: complete
             }
         }
         return availableTimeSlots;
@@ -149,10 +153,11 @@ const suitableTables = async (reservationDetails: Reservation, restaurant: Resta
         // maximize the profits 🚀
         const numberOfSeats = reservationDetails.numberOfClients + 1;
         // find tables with proper seats 
-        const tables: Array<Table> = await getRepository(Table).find({
-            where: { capacity: numberOfSeats, restaurant: restaurant },
-            relations: ['reservations']
-        });
+        const tables: Array<Table> = await getRepository(Table)
+            .find({
+                where: { capacity: numberOfSeats, restaurant: restaurant },
+                relations: ['reservations']
+            });
         return tables;
     } catch (error) {
         console.error(`error occurred, at reservations services, at suitableTables, error: ${error}`);
@@ -160,3 +165,24 @@ const suitableTables = async (reservationDetails: Reservation, restaurant: Resta
 };
 
 
+
+export const findReservationConflict = async (id: string, reservationDetails: Reservation) => {
+    try {
+        const repository = getRepository(Reservation);
+        const findTable = await tableServices.getTableById(id);
+        if (!findTable) {
+            return;
+        }
+        const conflictsResponse = await repository.find({
+            where: [
+                // counting all corresponding times
+                { table: findTable, staringHoursDate: reservationDetails.staringHoursDate, endingHoursDate: reservationDetails.endingHoursDate },
+                { table: findTable, staringHoursDate: reservationDetails.staringHoursDate },
+                { table: findTable, endingHoursDate: reservationDetails.endingHoursDate },
+            ]
+        });
+        return conflictsResponse;
+    } catch (error) {
+        console.error(`error occurred, at reservation services, at findReservationConflict, error: ${error}`);
+    }
+}
