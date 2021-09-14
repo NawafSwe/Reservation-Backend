@@ -1,5 +1,7 @@
 import Reservation from '../models/reservation.model';
 import * as reservationServices from '../services/reservation.service';
+import * as restaurantServices from '../services/restaurant.service';
+import dayjs from 'dayjs';
 export const getAllReservation = async () => {
     try {
         return await reservationServices.getAllReservations();
@@ -7,7 +9,50 @@ export const getAllReservation = async () => {
         console.error(`error occurred at reservations controllers, at getAllReservation, error: ${error}`);
     }
 };
-export const reserveTable = async () => { };
+export const reserveTable = async (id: string, reservationData: Reservation) => {
+    try {
+        // id of restaurant , to choose which table 
+        const findRestaurant = await restaurantServices.getRestaurantById(id);
+        if (!findRestaurant) {
+            // return not found
+            return;
+        }
+        // converting time into hours for human readable dates 24 hours system
+        const reservationStartingDateString = dayjs(reservationData.staringHoursDate).format('HH:mm');
+        const reservationEndingDateString = dayjs(reservationData.endingHoursDate).format('HH:mm');
+        reservationData.startingHoursString = reservationStartingDateString;
+        reservationData.endingDateHoursString = reservationEndingDateString;
+        // controller vars 
+        const isInBeforeRestaurantWorkingHours = reservationStartingDateString < findRestaurant.startingWorkingHoursString;
+        const isAfterRestaurantWorkingHours = reservationEndingDateString > findRestaurant.endingWorkingHoursString;
+
+
+        if (isInBeforeRestaurantWorkingHours || isAfterRestaurantWorkingHours) {
+            // reject
+            console.log(`error conflict for timing for restaurant working hours`);
+            return;
+        }
+
+        // check if table have any reservation conflicts 
+        const conflictReservations = await reservationServices.findConflictReservations(findRestaurant.tables, reservationData);
+        if (conflictReservations?.length > 0) {
+            // reject 
+            console.log(`conflictReservations, `, conflictReservations);
+            return;
+        }
+
+        // else proceed 
+        // do business logic before moving ahead, check, if the reservation conflicts with restaurant working hours, then if the table have reservation at that time.
+        const reservationResponse = await reservationServices.createReservation(findRestaurant, reservationData);
+        if (!reservationResponse) {
+            console.log(`cloud not find table suitable for given conditions`);
+            return
+        }
+        return reservationResponse;
+    } catch (error) {
+        console.error(`error occurred at reservations controllers, at reserveTable, error: ${error}`);
+    }
+};
 
 export const getReservationById = async (id: string) => {
     try {
