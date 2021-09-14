@@ -3,7 +3,7 @@ import Table from './table.model';
 
 @Entity()
 export default class Restaurant {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()

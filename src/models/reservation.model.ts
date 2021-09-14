@@ -3,7 +3,8 @@ import Table from './table.model';
 
 @Entity()
 export default class Reservation {
-    @PrimaryGeneratedColumn()
+    // CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; in db side
+    @PrimaryGeneratedColumn('uuid')
     public id: string;
     @Column()
     public startingHoursString: string;
