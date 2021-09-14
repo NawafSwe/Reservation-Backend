@@ -3,7 +3,9 @@ import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
 import UserDto from '../dtos/user.dto';
 export const getAllUsers = async (): Promise<Array<User> | never> => {
     try {
-        const users = await getRepository(User).find();
+        const users = await getRepository(User).find({
+            select: ['id', 'empNumber', 'role'] // prevent sending password back
+        });
         return users;
     } catch (error) {
         console.error(`error occurred at user services at, getAllUsers function, error: ${error}`);
@@ -12,18 +14,21 @@ export const getAllUsers = async (): Promise<Array<User> | never> => {
 
 export const getUserById = async (id: string): Promise<User | never> => {
     try {
-        const response = await getRepository(User).findOneOrFail(id);
+        const response = await getRepository(User).findOneOrFail(id, {
+            select: ['id', 'empNumber', 'role'] // prevent sending password back
+        });
         return response;
     } catch (error) {
         console.error(`error occurred at user services at, getUserById function, error: ${error}`);
     }
 };
-export const createUser = async (user: UserDto): Promise<User | never> => {
+export const createUser = async (user: UserDto): Promise<any | never> => {
     try {
-        const userRepository = await getRepository(User);
-        const createUserResponse = await userRepository.create(user);
+        const userRepository = getRepository(User);
+        const createUserResponse = userRepository.create(user);
+        // if failed means empNumber is already in use
         const response = await userRepository.save(createUserResponse);
-        return response;
+        return { id: response.id, employeeNumber: response.empNumber };
 
     } catch (error) {
         console.error(`error occurred at user services at,createUser function, error: ${error}`);

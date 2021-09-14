@@ -15,8 +15,8 @@ export const getRestaurants = async (): Promise<Array<Restaurant> | never> => {
 
 export const createRestaurant = async (restaurant: Restaurant): Promise<Restaurant | never> => {
     try {
-        const repository = await getRepository(Restaurant);
-        const response = await repository.create(restaurant);
+        const repository =  getRepository(Restaurant);
+        const response =  repository.create(restaurant);
         return await repository.save(response);
     } catch (error) {
         console.error(`error occurred, at restaurant services at createRestaurant function, error: ${error}`);

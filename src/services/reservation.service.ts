@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 export const getAllReservations = async (skip?: number, take?: number, period?: Date): Promise<any | never> => {
     try {
 
-        const reservationRepository = await getRepository(Reservation);
+        const reservationRepository = getRepository(Reservation);
         if (skip && take) {
             return await reservationRepository.findAndCount({
                 skip, take, relations: ['table'], where: {
@@ -42,13 +42,13 @@ export const getAllReservations = async (skip?: number, take?: number, period?: 
 
 export const createReservation = async (restaurant: Restaurant, reservation: Reservation): Promise<Reservation | never> => {
     try {
-        const findTable: Table = await pickTableForReservation(restaurant.tables, reservation);
+        const findTable: Table = pickTableForReservation(restaurant.tables, reservation);
         if (findTable) {
-            const reservationRepository = await getRepository(Reservation);
-            const reservationCreationResult = await reservationRepository.create({ ...reservation, table: findTable, createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
+            const reservationRepository = getRepository(Reservation);
+            const reservationCreationResult = reservationRepository.create({ ...reservation, table: findTable, createdAtString: dayjs(new Date()).format('DD/MM/YYYY') });
             return await reservationRepository.save(reservationCreationResult);
         }
-        else null;
+        else return null;
     } catch (error) {
         console.error(`error occurred at reservation services, at createReservation, error: ${error}`);
     }
@@ -56,7 +56,7 @@ export const createReservation = async (restaurant: Restaurant, reservation: Res
 
 export const getReservationById = async (id: string): Promise<Reservation | never> => {
     try {
-        const reservationRepository = await getRepository(Reservation);
+        const reservationRepository = getRepository(Reservation);
         return await reservationRepository.findOne(id, { relations: ['table'] });
     } catch (error) {
         console.error(`error occurred at reservation services, getReservationById, error: ${error}`);
@@ -66,7 +66,7 @@ export const getReservationById = async (id: string): Promise<Reservation | neve
 
 export const updateReservationById = async (id: string, body: Reservation): Promise<UpdateResult | never> => {
     try {
-        const reservationRepository = await getRepository(Reservation);
+        const reservationRepository = getRepository(Reservation);
         return await reservationRepository.update(id, body);
 
     } catch (error) {
@@ -77,7 +77,7 @@ export const updateReservationById = async (id: string, body: Reservation): Prom
 // TODO: soft delete, to keep record in 
 export const deleteReservationById = async (id: string): Promise<DeleteResult | never> => {
     try {
-        const reservationRepository = await getRepository(Reservation);
+        const reservationRepository = getRepository(Reservation);
         return await reservationRepository.delete(id);
 
     } catch (error) {

@@ -18,8 +18,8 @@ export const getTables = async (): Promise<Array<Table> | never> => {
 export const createTable = async (id: string, table: Table): Promise<Table | never> => {
     try {
         const findRestaurant: Restaurant = await restaurantServices.getRestaurantById(id);
-        const tableRepository = await getRepository(Table);
-        const insertTableResponse = await tableRepository.create({ ...table, restaurant: findRestaurant });
+        const tableRepository = getRepository(Table);
+        const insertTableResponse = tableRepository.create({ ...table, restaurant: findRestaurant });
         await tableRepository.save(insertTableResponse);
         return insertTableResponse;
 
