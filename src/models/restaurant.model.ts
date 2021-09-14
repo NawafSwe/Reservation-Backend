@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, Table } from 'typeorm';
-
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from 'typeorm';
+import Table from './table.model';
 
 @Entity()
 export default class Restaurant {
@@ -20,6 +20,7 @@ export default class Restaurant {
 
     @Column()
     endingWorkingHoursDate: Date;
+
     @OneToMany(() => Table, (table: Table) => table.restaurant)
     @JoinColumn()
     tables: Array<Table>;
