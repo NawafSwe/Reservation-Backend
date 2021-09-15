@@ -3,10 +3,11 @@ import getServer from '../testingServer';
 import supertest from 'supertest';
 import dbConnection from '../../../config/db.config';
 import closeConnection from '../../../config/closeConnection.config';
-
+import { adminBody } from '../prepareUsers'
 describe('testing get all restaurants functionality', () => {
     let agent, app;
     const url = '/restaurants';
+    let userAuth;
     /**
      * @description setting up server to test functionality
      */
@@ -18,14 +19,19 @@ describe('testing get all restaurants functionality', () => {
             console.log(`server running for testing`);
         });
         agent = supertest(app);
-
+        // prepare a user to be authenticated as ADMIN 
+        await agent.post('/users').send(adminBody).expect(HttpStatus.CREATED.code);
+        const authenticationResponse = await agent.post('/api/auth/login').send({ empNumber: adminBody.empNumber, password: adminBody.password, }).expect(HttpStatus.OK.code);
+        userAuth = { token: authenticationResponse.headers.token };
     });
 
     /**
     * @description getting restaurants successfully
     */
     test('get restaurants successfully, returning 200 STATUS', async () => {
-        await agent.post(url).send(
+        await agent.post(url)
+        .set('auth', userAuth.token)
+        .send(
             {
                 "name": "Labira",
                 "startingWorkingHoursDate": "2021-09-10 10:00:00",
@@ -33,8 +39,9 @@ describe('testing get all restaurants functionality', () => {
 
             }
         ).expect(HttpStatus.CREATED.code);
-        const response = await agent.get(url).expect(HttpStatus.OK.code);
-        console.log(response.body);
+        const response = await agent.get(url)
+            .set('auth', userAuth.token)
+            .expect(HttpStatus.OK.code);
         expect(response.status).toBe(HttpStatus.OK.code);
         expect(response.body).toHaveProperty('data');
         expect(response.body.data).toHaveProperty('restaurants');

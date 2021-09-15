@@ -3,8 +3,11 @@ import Routes from '@interfaces/routes.interface';
 import * as controllers from '../controllers/restaurants.controller';
 const router: Router = Router();
 import * as validations from '../utils/validations/restaurantValidations/index';
+import { checkRole } from '../middlewares/checkRole.middleware';
+import { checkJwt } from '../middlewares/checkToken.middleware';
+import { Roles } from '../utils/types/roles.types';
 
-router.get(`/`, async (req: Request, res: Response) => {
+router.get(`/`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getAllRestaurants();
         res.status(response.status).json(response);
@@ -12,7 +15,7 @@ router.get(`/`, async (req: Request, res: Response) => {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
 });
-router.post(`/`, [validations.createRestaurantValidation], async (req: Request, res: Response) => {
+router.post(`/`, [checkJwt, checkRole([Roles.ADMIN]), validations.createRestaurantValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.createRestaurant(req.body);
         res.status(response.status).json(response);
@@ -21,7 +24,7 @@ router.post(`/`, [validations.createRestaurantValidation], async (req: Request, 
     }
 });
 
-router.get(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
+router.get(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getRestaurantById(req.params.id);
         res.status(response.status).json(response);
@@ -30,7 +33,7 @@ router.get(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req
     }
 });
 
-router.delete(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
+router.delete(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteRestaurantById(req.params.id);
         res.status(response.status).json(response);
@@ -40,7 +43,7 @@ router.delete(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (
 });
 
 router.put(`/:id`,
-    [validations.getOrDeleteRestaurantByIdValidation, validations.updateRestaurantByIdValidation],
+    [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteRestaurantByIdValidation, validations.updateRestaurantByIdValidation],
     async (req: Request, res: Response) => {
         try {
             const response = await controllers.updateRestaurantById(req.params.id, req.body);
