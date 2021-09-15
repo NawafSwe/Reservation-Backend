@@ -21,7 +21,7 @@ router.post(`/`, [validations.createRestaurantValidation], async (req: Request, 
     }
 });
 
-router.get(`/:id`, async (req: Request, res: Response) => {
+router.get(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getRestaurantById(req.params.id);
         res.status(200).json(response);
@@ -30,7 +30,7 @@ router.get(`/:id`, async (req: Request, res: Response) => {
     }
 });
 
-router.delete(`/:id`, async (req: Request, res: Response) => {
+router.delete(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteRestaurantById(req.params.id);
         res.status(200).json(response);
@@ -39,13 +39,15 @@ router.delete(`/:id`, async (req: Request, res: Response) => {
     }
 });
 
-router.put(`/:id`, async (req: Request, res: Response) => {
-    try {
-        const response = await controllers.updateRestaurantById(req.params.id, req.body);
-        res.status(200).json(response);
-    } catch (error) {
-        console.error(`error occurred at route, ${req.path}, error: ${error}`);
-    }
-});
+router.put(`/:id`,
+    [validations.getOrDeleteRestaurantByIdValidation, validations.updateRestaurantByIdValidation],
+    async (req: Request, res: Response) => {
+        try {
+            const response = await controllers.updateRestaurantById(req.params.id, req.body);
+            res.status(200).json(response);
+        } catch (error) {
+            console.error(`error occurred at route, ${req.path}, error: ${error}`);
+        }
+    });
 
 export default { router: router, path: 'restaurants' } as Routes;
