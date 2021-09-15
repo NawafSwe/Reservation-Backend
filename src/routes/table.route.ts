@@ -7,7 +7,7 @@ const router: Router = Router();
 router.get(`/`, async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getAllTables();
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
@@ -18,7 +18,7 @@ router.post(`/`, [validations.createTableValidation], async (req: Request, res: 
         const restaurantID = req.body.restaurantId;
         delete req.body.restaurantId;
         const response = await tableControllers.createTable(restaurantID, req.body);
-        res.status(201).json(response);
+        res.status(response.status).json(response);
 
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error`);
@@ -29,7 +29,7 @@ router.post(`/`, [validations.createTableValidation], async (req: Request, res: 
 router.get(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getTableById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error`);
     }
@@ -38,7 +38,7 @@ router.get(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Req
 router.put(`/:id`, [validations.getOrDeleteTableByIdValidation, validations.updateTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.updateTableById(req.params.id, req.body);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error`);
     }
@@ -47,7 +47,7 @@ router.put(`/:id`, [validations.getOrDeleteTableByIdValidation, validations.upda
 router.delete(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.deleteTableById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
 
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error`);

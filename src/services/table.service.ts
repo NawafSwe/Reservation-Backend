@@ -2,6 +2,7 @@ import Table from '../models/table.model';
 import Restaurant from '../models/restaurant.model';
 import * as restaurantServices from './restaurant.service';
 import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
+
 export const getTables = async (): Promise<Array<Table> | never> => {
     try {
         return await getRepository(Table).find({ relations: ['restaurant', 'reservations'] });
@@ -15,11 +16,10 @@ export const getTables = async (): Promise<Array<Table> | never> => {
  * @param {string} id of restaurant
  * @param {Table} table data
  */
-export const createTable = async (id: string, table: Table): Promise<Table | never> => {
+export const createTable = async (restaurant: Restaurant, table: Table): Promise<Table | never> => {
     try {
-        const findRestaurant: Restaurant = await restaurantServices.getRestaurantById(id);
         const tableRepository = getRepository(Table);
-        const insertTableResponse = tableRepository.create({ ...table, restaurant: findRestaurant });
+        const insertTableResponse = tableRepository.create({ ...table, restaurant: restaurant });
         await tableRepository.save(insertTableResponse);
         return insertTableResponse;
 
