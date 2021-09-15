@@ -4,8 +4,11 @@ import * as reservationControllers from '../controllers/reservation.controller';
 const router: Router = Router();
 import { getOrDeleteTableByIdValidation } from '../utils/validations/tableValidations/index';
 import * as validations from '../utils/validations/reservationValidations/index';
+import { checkRole } from '../middlewares/checkRole.middleware';
+import { checkJwt } from '../middlewares/checkToken.middleware';
+import { Roles } from '../utils/types/roles.types';
 
-router.get(`/`, async (req: Request, res: Response) => {
+router.get(`/`, [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE])], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.getAllReservation();
         res.status(response.status).json(response);
@@ -15,7 +18,7 @@ router.get(`/`, async (req: Request, res: Response) => {
     }
 });
 
-router.get(`/:id`, async (req: Request, res: Response) => {
+router.get(`/:id`, [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE]), getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.getReservationById(req.params.id);
         res.status(response.status).json(response);
@@ -24,7 +27,7 @@ router.get(`/:id`, async (req: Request, res: Response) => {
     }
 });
 
-router.post(`/:id`, [getOrDeleteTableByIdValidation, validations.createReservationValidation], async (req: Request, res: Response) => {
+router.post(`/:id`, [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE]), getOrDeleteTableByIdValidation, validations.createReservationValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.reserveTable(req.params.tableId, req.body);
         res.status(response.status).json(response);
@@ -33,7 +36,7 @@ router.post(`/:id`, [getOrDeleteTableByIdValidation, validations.createReservati
     }
 });
 
-router.put(`/:id`, [validations.getOrDeleteReservationByIdValidation, validations.updateReservationByIdValidation], async (req: Request, res: Response) => {
+router.put(`/:id`, [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE]), validations.getOrDeleteReservationByIdValidation, validations.updateReservationByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.updateReservationById(req.params.id, req.body);
         res.status(response.status).json(response);
@@ -43,7 +46,7 @@ router.put(`/:id`, [validations.getOrDeleteReservationByIdValidation, validation
 });
 
 
-router.delete(`/:id`, [validations.getOrDeleteReservationByIdValidation], async (req: Request, res: Response) => {
+router.delete(`/:id`, [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE]), validations.getOrDeleteReservationByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.deleteReservationById(req.params.id);
         res.status(response.status).json(response);
