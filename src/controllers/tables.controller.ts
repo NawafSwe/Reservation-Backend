@@ -2,6 +2,8 @@ import Table from '../models/table.model';
 import * as tableServices from '../services/table.service';
 import { HttpStatus, APIError, APIResponse } from '../utils/serverUtils/index';
 import * as restaurantServices from '../services/restaurant.service';
+import * as timeSlotsServices from '../services/timeSlot.service';
+import dayjs from 'dayjs';
 export const getAllTables = async (): Promise<APIResponse> => {
     try {
         const response = await tableServices.getTables();
@@ -19,11 +21,38 @@ export const createTable = async (id: string, body: Table) => {
         if (!findRestaurant) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `filed during creating a table, restaurant with id: ${id} was not found`)]);
         }
+
         const createTableResponse = await tableServices.createTable(findRestaurant, body);
         if (!createTableResponse) {
             return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `failed during table creation`)]);
         }
-        return new APIResponse({ table: createTableResponse }, HttpStatus.CREATED.code);
+
+        let apiResponse = new APIResponse({ table: createTableResponse }, HttpStatus.CREATED.code, []);
+        // remove slots from api response, and continue create slots 
+        delete apiResponse.data.table.slots;
+        if (body.slots) {
+            for (const slot of body.slots) {
+                //withing working hours of restaurant
+                // converting time into hours for human readable dates 24 hours system
+                const slotStartingDateString = dayjs(slot.startingDate).format('HH:mm');
+                const slotEndingDateString = dayjs(slot.endingDate).format('HH:mm');
+                slot.startingDateString = slotStartingDateString;
+                slot.endingDateString = slotEndingDateString;
+
+                // controller vars 
+                const isInBeforeRestaurantWorkingHours = slotStartingDateString < findRestaurant.startingWorkingHoursString;
+                const isAfterRestaurantWorkingHours = slotEndingDateString > findRestaurant.endingWorkingHoursString;
+                if (!(isAfterRestaurantWorkingHours || isInBeforeRestaurantWorkingHours)) {
+                    const creatingSlotResponse = await timeSlotsServices.createTimeSlot(createTableResponse, slot);
+                    if (!creatingSlotResponse) {
+                        apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, try to create it later`));
+                    }
+                } else {
+                    apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, because it is conflicting with restaurant working hours`));
+                }
+            }
+        }
+        return apiResponse;
 
     } catch (error) {
         console.error(`error occurred at tableControllers, at createTable, error: ${error}`);

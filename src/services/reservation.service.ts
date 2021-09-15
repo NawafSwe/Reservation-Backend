@@ -5,8 +5,7 @@ import Table from '../models/table.model';
 import Restaurant from "../models/restaurant.model";
 import * as tableServices from './table.service';
 import dayjs from "dayjs";
-import isBetween from 'dayjs/plugin/isBetween';
-dayjs.extend(isBetween);
+
 /**
  * @param skip where from entities should be taken.
  * @param take max number of entities should be taken.

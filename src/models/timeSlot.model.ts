@@ -6,7 +6,7 @@ export default class TimeSlot {
     @PrimaryGeneratedColumn('uuid')
     public id: string;
     @Column()
-    public startingDateString:string;
+    public startingDateString: string;
     @Column()
     public endingDateString: string;
 

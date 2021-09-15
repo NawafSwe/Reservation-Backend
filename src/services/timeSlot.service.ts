@@ -1,5 +1,6 @@
 import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
 import TimeSlot from '../models/timeSlot.model';
+import Table from '../models/table.model';
 
 
 export const getSlots = async (): Promise<Array<TimeSlot> | never> => {
@@ -13,10 +14,10 @@ export const getSlots = async (): Promise<Array<TimeSlot> | never> => {
     }
 };
 
-export const createTimeSlot = async (slot: TimeSlot): Promise<TimeSlot | never> => {
+export const createTimeSlot = async (table: Table, slot: TimeSlot): Promise<TimeSlot | never> => {
     try {
         const repository = getRepository(TimeSlot);
-        const response = repository.create(slot);
+        const response = repository.create({ ...slot, table: table });
         return await repository.save(response);
     } catch (error) {
         console.error(`error occurred, at TimeSlots services at createSlot function, error: ${error}`);
