@@ -1,10 +1,13 @@
 import { Router, Request, Response } from 'express';
 import Routes from '@interfaces/routes.interface';
 import * as tableControllers from '../controllers/tables.controller';
-import * as validations from '../utils/validations/tableValidations/index'
+import * as validations from '../utils/validations/tableValidations/index';
+import { checkRole } from '../middlewares/checkRole.middleware';
+import { checkJwt } from '../middlewares/checkToken.middleware';
+import { Roles } from '../utils/types/roles.types';
 const router: Router = Router();
 
-router.get(`/`, async (req: Request, res: Response) => {
+router.get(`/`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getAllTables();
         res.status(response.status).json(response);
@@ -13,7 +16,7 @@ router.get(`/`, async (req: Request, res: Response) => {
     }
 });
 
-router.post(`/`, [validations.createTableValidation], async (req: Request, res: Response) => {
+router.post(`/`, [checkJwt, checkRole([Roles.ADMIN]), validations.createTableValidation], async (req: Request, res: Response) => {
     try {
         const restaurantID = req.body.restaurantId;
         delete req.body.restaurantId;
@@ -26,7 +29,7 @@ router.post(`/`, [validations.createTableValidation], async (req: Request, res: 
 });
 
 
-router.get(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
+router.get(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.getTableById(req.params.id);
         res.status(response.status).json(response);
@@ -35,7 +38,7 @@ router.get(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Req
     }
 });
 
-router.put(`/:id`, [validations.getOrDeleteTableByIdValidation, validations.updateTableByIdValidation], async (req: Request, res: Response) => {
+router.put(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteTableByIdValidation, validations.updateTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.updateTableById(req.params.id, req.body);
         res.status(response.status).json(response);
@@ -44,7 +47,7 @@ router.put(`/:id`, [validations.getOrDeleteTableByIdValidation, validations.upda
     }
 });
 
-router.delete(`/:id`, [validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
+router.delete(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.getOrDeleteTableByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await tableControllers.deleteTableById(req.params.id);
         res.status(response.status).json(response);
