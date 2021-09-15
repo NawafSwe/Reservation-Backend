@@ -4,6 +4,7 @@ import { HttpStatus, APIError, APIResponse } from '../utils/serverUtils/index';
 import * as restaurantServices from '../services/restaurant.service';
 import * as timeSlotsServices from '../services/timeSlot.service';
 import dayjs from 'dayjs';
+import TimeSlot from '/models/timeSlot.model';
 export const getAllTables = async (): Promise<APIResponse> => {
     try {
         const response = await tableServices.getTables();
@@ -30,6 +31,8 @@ export const createTable = async (id: string, body: Table) => {
         let apiResponse = new APIResponse({ table: createTableResponse }, HttpStatus.CREATED.code, []);
         // remove slots from api response, and continue create slots 
         delete apiResponse.data.table.slots;
+        const createdSlots: Array<any> = [];
+        apiResponse.data.table.slots = createdSlots;
         if (body.slots) {
             for (const slot of body.slots) {
                 //withing working hours of restaurant
@@ -46,6 +49,9 @@ export const createTable = async (id: string, body: Table) => {
                     const creatingSlotResponse = await timeSlotsServices.createTimeSlot(createTableResponse, slot);
                     if (!creatingSlotResponse) {
                         apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, try to create it later`));
+                    } else {
+                        // hiding table info from slots
+                        createdSlots.push({ startingDate: creatingSlotResponse.startingDate, endingDate: creatingSlotResponse.endingDate, status: creatingSlotResponse.status });
                     }
                 } else {
                     apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, because it is conflicting with restaurant working hours`));
@@ -53,7 +59,6 @@ export const createTable = async (id: string, body: Table) => {
             }
         }
         return apiResponse;
-
     } catch (error) {
         console.error(`error occurred at tableControllers, at createTable, error: ${error}`);
         return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, error.message)]);

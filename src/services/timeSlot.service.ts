@@ -18,7 +18,9 @@ export const createTimeSlot = async (table: Table, slot: TimeSlot): Promise<Time
     try {
         const repository = getRepository(TimeSlot);
         const response = repository.create({ ...slot, table: table });
-        return await repository.save(response);
+        const savedSlot = await repository.save(response);
+        delete savedSlot.table;
+        return savedSlot;
     } catch (error) {
         console.error(`error occurred, at TimeSlots services at createSlot function, error: ${error}`);
     }
