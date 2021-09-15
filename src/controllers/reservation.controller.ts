@@ -96,6 +96,15 @@ export const getReservationById = async (id: string): Promise<APIResponse> => {
 
 export const updateReservationById = async (id: string, body: Reservation): Promise<APIResponse> => {
     try {
+        // converting time into hours for human readable dates 24 hours system
+
+
+        if (body.staringHoursDate) {
+            body.startingHoursString = dayjs(body.staringHoursDate).format('HH:mm');
+        }
+        if (body.endingHoursDate) {
+            body.endingDateHoursString = dayjs(body.endingHoursDate).format('HH:mm');;
+        }
         const updateReservationResult = await reservationServices.updateReservationById(id, body);
         if (updateReservationResult.affected === 0) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation update with id: ${id} cannot be done at this time`)]);
