@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import Reservation from './reservation.model';
 import Restaurant from './restaurant.model';
+import TimeSlot from './timeSlot.model';
 
 @Entity()
 export default class TableEntity {
@@ -20,4 +21,8 @@ export default class TableEntity {
     @OneToMany(() => Reservation, (reservation: Reservation) => reservation.table)
     @JoinColumn()
     reservations: Array<Reservation>;
+
+    @OneToMany(()=>TimeSlot, (slots:TimeSlot) => slots.table)
+    @JoinColumn()
+    slots:Array<TimeSlot>;
 }

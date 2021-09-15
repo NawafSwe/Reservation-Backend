@@ -1,11 +1,10 @@
 import Table from '../models/table.model';
 import Restaurant from '../models/restaurant.model';
-import * as restaurantServices from './restaurant.service';
 import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
 
 export const getTables = async (): Promise<Array<Table> | never> => {
     try {
-        return await getRepository(Table).find({ relations: ['restaurant', 'reservations'] });
+        return await getRepository(Table).find({ relations: ['restaurant', 'reservations','slots'] });
     } catch (error) {
         console.error(`error occurred at tables services, at getTables, error: ${error}`);
     }
@@ -31,7 +30,7 @@ export const createTable = async (restaurant: Restaurant, table: Table): Promise
 
 export const getTableById = async (id: string): Promise<Table | never> => {
     try {
-        return await getRepository(Table).findOne(id, { relations: ['restaurant', 'reservations'] });
+        return await getRepository(Table).findOne(id, { relations: ['restaurant', 'reservations','slots'] });
     } catch (error) {
         console.error(`error occurred at tables services, at getTableById, error: ${error}`);
     }
