@@ -4,3 +4,5 @@ dist
 .env
 .env.development
 ormconfig.env
+.env.testing
+coverage

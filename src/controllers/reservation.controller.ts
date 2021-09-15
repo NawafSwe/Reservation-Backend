@@ -22,7 +22,11 @@ export const reserveTable = async (id: string, reservationData: Reservation): Pr
             // return not found
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `Table with id: ${id} not found`)]);
         }
+
         // if capacity not matching conditions, throw an error
+        if (!(findTable.capacity >= reservationData.numberOfClients + 1)) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `Table with id: ${id} cannot be reserved because of capacity restriction`)]);
+        }
         // converting time into hours for human readable dates 24 hours system
         const reservationStartingDateString = dayjs(reservationData.staringHoursDate).format('HH:mm');
         const reservationEndingDateString = dayjs(reservationData.endingHoursDate).format('HH:mm');
@@ -108,7 +112,7 @@ export const updateReservationById = async (id: string, body: Reservation): Prom
 export const deleteReservationById = async (id: string): Promise<APIResponse> => {
     try {
         const reservation = await reservationServices.getReservationById(id);
-        if(reservation!){
+        if (!reservation) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation with id: ${id} was not found`)]);
         }
         await timeSlotServices.updateTimeSlotById(reservation.slot.id, { ...reservation.slot, status: false });

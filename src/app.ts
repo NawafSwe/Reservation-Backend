@@ -45,5 +45,9 @@ export default class App {
         this.app.use(morgan('tiny'));
         this.app.use(helmet());
     }
+
+    public getServer() {
+        return this.app;
+    }
 }
 
