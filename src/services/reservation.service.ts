@@ -5,6 +5,7 @@ import Table from '../models/table.model';
 import Restaurant from "../models/restaurant.model";
 import * as tableServices from './table.service';
 import dayjs from "dayjs";
+import TimeSlot from "../models/timeSlot.model";
 
 /**
  * @param skip where from entities should be taken.
@@ -116,30 +117,24 @@ export const findConflictReservations = async (restaurant: Restaurant, reservati
     }
 };
 
+/**
+ * 
+ * @param restaurant 
+ * @returns 
+ * @description returning all available tables to be reserved
+ */
 
-export const listAllAvailableReservations = async (restaurant: Restaurant, reservationConditions: Reservation) => {
+export const listAllAvailableReservations = async (restaurant: Restaurant) => {
     try {
-        const pickTableForReservationResponse = await suitableTables(reservationConditions, restaurant);
-
-        if (!pickTableForReservationResponse) {
-            return;
-        }
         const availableTimeSlots: any = {};
         availableTimeSlots.tables = [];
-        for (const table of pickTableForReservationResponse) {
-            // means there is no reservations so from now till the end of the restaurant's working hour should be available
-            if (table.reservations.length === 0) {
-                availableTimeSlots.tables.push({
-                    table: {
-                        ...table,
-                        // should not conflicts with restaurant hours
-                        availability: [`${dayjs(new Date()).format('HH:mm')} - ${dayjs(restaurant.endingWorkingHoursDate).format('HH:mm')}`]
-                    },
-
-                });
-            } else {
-                // Have starting date called now, then check if there is reservation so make availability from that end to the next, so again find next and so on till length is zero then make it to rest
-            }
+        for (const table of restaurant.tables) {
+            const freeTimeSlots = await getRepository(TimeSlot).find({
+                where: {
+                    table: table, status: false
+                }
+            });
+            availableTimeSlots.tables.push(...freeTimeSlots);
         }
         return availableTimeSlots;
     } catch (error) {
@@ -167,19 +162,16 @@ const suitableTables = async (reservationDetails: Reservation, restaurant: Resta
 
 export const findReservationConflict = async (id: string, reservationDetails: Reservation) => {
     try {
-        const repository = getRepository(Reservation);
+        const timeSlotRepository = getRepository(TimeSlot);
         const findTable = await tableServices.getTableById(id);
-        if (!findTable) {
-            return;
-        }
-        const conflictsResponse = await repository.find({
-            where: [
-                // counting all corresponding times
-                { table: findTable, staringHoursDate: reservationDetails.staringHoursDate, endingHoursDate: reservationDetails.endingHoursDate },
-                { table: findTable, staringHoursDate: reservationDetails.staringHoursDate },
-                { table: findTable, endingHoursDate: reservationDetails.endingHoursDate },
-            ],
-            order: {staringHoursDate: 'ASC' }
+        if (!findTable) { return; }
+        const conflictsResponse = await timeSlotRepository.find({
+            where: {
+                table: findTable,
+                startingDate: reservationDetails.staringHoursDate,
+                endingDate: reservationDetails.endingHoursDate,
+                status: true
+            }
         });
         return conflictsResponse;
     } catch (error) {

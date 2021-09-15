@@ -31,7 +31,7 @@ export const createTable = async (id: string, body: Table) => {
         let apiResponse = new APIResponse({ table: createTableResponse }, HttpStatus.CREATED.code, []);
         // remove slots from api response, and continue create slots 
         delete apiResponse.data.table.slots;
-        const createdSlots: Array<any> = [];
+        const createdSlots: Array<TimeSlot> = [];
         apiResponse.data.table.slots = createdSlots;
         if (body.slots) {
             for (const slot of body.slots) {
@@ -50,8 +50,7 @@ export const createTable = async (id: string, body: Table) => {
                     if (!creatingSlotResponse) {
                         apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, try to create it later`));
                     } else {
-                        // hiding table info from slots
-                        createdSlots.push({ startingDate: creatingSlotResponse.startingDate, endingDate: creatingSlotResponse.endingDate, status: creatingSlotResponse.status });
+                        createdSlots.push(slot);
                     }
                 } else {
                     apiResponse.errors.push(new APIError(HttpStatus.CONFLICT, `Failed to create the slot with ${slot.startingDate} --- ${slot.endingDate}, because it is conflicting with restaurant working hours`));

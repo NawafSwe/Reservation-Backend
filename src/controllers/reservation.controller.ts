@@ -2,6 +2,7 @@ import Reservation from '../models/reservation.model';
 import * as reservationServices from '../services/reservation.service';
 import * as restaurantServices from '../services/restaurant.service';
 import * as tableServices from '../services/table.service';
+import * as timeSlotServices from '../services/timeSlot.service';
 import dayjs from 'dayjs';
 import { HttpStatus, APIError, APIResponse } from '../utils/serverUtils/index';
 export const getAllReservation = async (): Promise<APIResponse> => {
@@ -51,10 +52,19 @@ export const reserveTable = async (id: string, reservationData: Reservation): Pr
         // choose table before enter create reservation controller
         // else proceed 
         // do business logic before moving ahead, check, if the reservation conflicts with restaurant working hours, then if the table have reservation at that time.
+        const getSlot = await timeSlotServices.findTimeSlotByDate(reservationData.staringHoursDate, reservationData.endingHoursDate, findTable);
+        if (!getSlot) {
+            return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `reservation cannot be done because there is no timing slots match the table`)]);
+        }
+        getSlot.status = true;
+        await timeSlotServices.updateTimeSlotById(getSlot.id, { ...getSlot });
+
         const reservationResponse = await reservationServices.createReservation(findTable, reservationData);
         if (!reservationResponse) {
             return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.NOT_FOUND, `Reservation failed`)]);
         }
+        // reservation done successfully then change status of time slot based on the given time
+
         return new APIResponse(
             {
                 message: `reservation with id: ${reservationResponse.id} was created`,
@@ -110,13 +120,14 @@ export const deleteReservationById = async (id: string): Promise<APIResponse> =>
     }
 };
 
-export const listAllAvailableReservations = async (id: string, reservationData: Reservation): Promise<APIResponse> => {
+export const listAllAvailableReservations = async (id: string): Promise<APIResponse> => {
     try {
         const findRestaurant = await restaurantServices.getRestaurantById(id);
         if (!findRestaurant) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `restaurant with id: ${id} was not found`)]);
         }
-        const response = await reservationServices.listAllAvailableReservations(findRestaurant, reservationData);
+        console.log(findRestaurant)
+        const response = await reservationServices.listAllAvailableReservations(findRestaurant);
         return new APIResponse(response, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at listAllAvailableReservations, error: ${error}`);
