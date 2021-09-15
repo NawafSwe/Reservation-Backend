@@ -16,11 +16,11 @@ export const getAllTables = async (): Promise<APIResponse> => {
 export const createTable = async (id: string, body: Table) => {
     try {
         const findRestaurant = await restaurantServices.getRestaurantById(id);
-        if (!findRestaurant.id) {
+        if (!findRestaurant) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `filed during creating a table, restaurant with id: ${id} was not found`)]);
         }
         const createTableResponse = await tableServices.createTable(findRestaurant, body);
-        if (!createTableResponse.id) {
+        if (!createTableResponse) {
             return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `failed during table creation`)]);
         }
         return new APIResponse({ table: createTableResponse }, HttpStatus.CREATED.code);
@@ -34,7 +34,7 @@ export const createTable = async (id: string, body: Table) => {
 export const getTableById = async (id: string) => {
     try {
         const findTable = await tableServices.getTableById(id);
-        if (!findTable.id) {
+        if (!findTable) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `table with id ${id} was not found`)]);
         }
         return new APIResponse({ table: findTable }, HttpStatus.OK.code);
@@ -63,8 +63,8 @@ export const updateTableById = async (id: string, body: Table) => {
 export const deleteTableById = async (id: string) => {
     try {
         const findTable = await tableServices.getTableById(id);
-        if (!findTable.id) {
-            return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `table deletion with id: ${id} cannot be done because it was not found`)]);
+        if (!findTable) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `table deletion with id: ${id} cannot be done because it was not found`)]);
         }
         if (findTable.reservations.length > 0) {
             return new APIResponse({
