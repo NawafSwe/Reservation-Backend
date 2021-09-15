@@ -8,7 +8,7 @@ import * as validations from '../utils/validations/reservationValidations/index'
 router.get(`/`, async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.getAllReservation();
-        res.status(200).json(response);
+        res.status(response.status).json(response);
 
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
@@ -18,7 +18,7 @@ router.get(`/`, async (req: Request, res: Response) => {
 router.get(`/:id`, async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.getReservationById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error`)
     }
@@ -27,7 +27,7 @@ router.get(`/:id`, async (req: Request, res: Response) => {
 router.post(`/:id`, [getOrDeleteTableByIdValidation, validations.createReservationValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.reserveTable(req.params.tableId, req.body);
-        res.status(201).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
@@ -36,7 +36,7 @@ router.post(`/:id`, [getOrDeleteTableByIdValidation, validations.createReservati
 router.put(`/:id`, [validations.getOrDeleteReservationByIdValidation, validations.updateReservationByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.updateReservationById(req.params.id, req.body);
-        res.status(201).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
@@ -46,7 +46,7 @@ router.put(`/:id`, [validations.getOrDeleteReservationByIdValidation, validation
 router.delete(`/:id`, [validations.getOrDeleteReservationByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await reservationControllers.deleteReservationById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
