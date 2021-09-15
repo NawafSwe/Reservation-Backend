@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-
+import { HttpStatus } from '../utils/serverUtils/index';
 export const checkJwt = async (req: Request, res: Response, next: NextFunction) => {
     const token = <string>req.headers['auth'];
     let jwtPayload;
@@ -10,7 +10,7 @@ export const checkJwt = async (req: Request, res: Response, next: NextFunction) 
         jwtPayload = <any>jwt.verify(token, SECRET);
         res.locals.jwtPayload = jwtPayload;
     } catch (error) {
-        res.status(401).send({ message: 'unauthorized' });
+        res.status(HttpStatus.UNAUTHORIZED.code).send({ message: 'Your access token is expired please login to consume services', status: HttpStatus.UNAUTHORIZED.code });
         return;
     }
     // then the token is valid for certain time
