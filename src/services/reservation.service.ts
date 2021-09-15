@@ -57,7 +57,7 @@ export const createReservation = async (table: Table, reservation: Reservation):
 export const getReservationById = async (id: string): Promise<Reservation | never> => {
     try {
         const reservationRepository = getRepository(Reservation);
-        return await reservationRepository.findOne(id, { relations: ['table'] });
+        return await reservationRepository.findOne(id, { relations: ['table', 'slot'] });
     } catch (error) {
         console.error(`error occurred at reservation services, getReservationById, error: ${error}`);
     }

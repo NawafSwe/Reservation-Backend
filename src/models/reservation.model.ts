@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, CreateDateColumn, OneToOne } from 'typeorm';
 import Table from './table.model';
-
+import TimeSlot from './timeSlot.model';
 @Entity()
 export default class Reservation {
     // CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; in db side
@@ -29,4 +29,8 @@ export default class Reservation {
 
     @CreateDateColumn()
     public createdAt: Date;
+
+    @OneToOne(() => TimeSlot, (slot: TimeSlot) => slot)
+    @JoinColumn()
+    public slot: TimeSlot;
 }

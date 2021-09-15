@@ -59,7 +59,7 @@ export const reserveTable = async (id: string, reservationData: Reservation): Pr
         getSlot.status = true;
         await timeSlotServices.updateTimeSlotById(getSlot.id, { ...getSlot });
 
-        const reservationResponse = await reservationServices.createReservation(findTable, reservationData);
+        const reservationResponse = await reservationServices.createReservation(findTable, { ...reservationData, slot: getSlot });
         if (!reservationResponse) {
             return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.NOT_FOUND, `Reservation failed`)]);
         }
@@ -107,7 +107,13 @@ export const updateReservationById = async (id: string, body: Reservation): Prom
 };
 export const deleteReservationById = async (id: string): Promise<APIResponse> => {
     try {
+        const reservation = await reservationServices.getReservationById(id);
+        if(reservation!){
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation with id: ${id} was not found`)]);
+        }
+        await timeSlotServices.updateTimeSlotById(reservation.slot.id, { ...reservation.slot, status: false });
         const deleteReservationResult = await reservationServices.deleteReservationById(id);
+
         if (deleteReservationResult.affected === 0) {
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation deletion with id: ${id} cannot be done at this time`)]);
         }

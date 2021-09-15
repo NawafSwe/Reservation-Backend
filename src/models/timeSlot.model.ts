@@ -23,5 +23,4 @@ export default class TimeSlot {
     // status of time slots, busy or not
     @Column({ default: false })
     public status: boolean;
-
 }
