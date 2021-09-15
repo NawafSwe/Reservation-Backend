@@ -7,17 +7,9 @@ import * as validations from '../utils/validations/reservationValidations/index'
 
 router.get(`/`, async (req: Request, res: Response) => {
     try {
-        // available reservations
-        if (req.query.by === 'timeSlots') {
-            const restaurantId = req.body.restaurantId;
-            delete req.body.restaurantId;
-            const response = await reservationControllers.listAllAvailableReservations(restaurantId, req.body);
-            res.status(200).json(response);
-        }
-        else {
-            const response = await reservationControllers.getAllReservation();
-            res.status(200).json(response);
-        }
+        const response = await reservationControllers.getAllReservation();
+        res.status(200).json(response);
+
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
