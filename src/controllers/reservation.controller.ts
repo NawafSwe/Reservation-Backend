@@ -3,20 +3,23 @@ import * as reservationServices from '../services/reservation.service';
 import * as restaurantServices from '../services/restaurant.service';
 import * as tableServices from '../services/table.service';
 import dayjs from 'dayjs';
-export const getAllReservation = async () => {
+import { HttpStatus, APIError, APIResponse } from '../utils/serverUtils/index';
+export const getAllReservation = async (): Promise<APIResponse> => {
     try {
-        return await reservationServices.getAllReservations();
+        const reservationsList: Array<Reservation> = await reservationServices.getAllReservations();
+        return new APIResponse({ reservations: reservationsList }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservations controllers, at getAllReservation, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 };
-export const reserveTable = async (id: string, reservationData: Reservation) => {
+export const reserveTable = async (id: string, reservationData: Reservation): Promise<APIResponse> => {
     try {
         // obtain id of restaurant , to choose which table 
         const findTable = await tableServices.getTableById(id);
         if (!findTable) {
             // return not found
-            return;
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `Table with id: ${id} not found`)]);
         }
         // if capacity not matching conditions, throw an error
         // converting time into hours for human readable dates 24 hours system
@@ -32,13 +35,17 @@ export const reserveTable = async (id: string, reservationData: Reservation) => 
         if (isInBeforeRestaurantWorkingHours || isAfterRestaurantWorkingHours) {
             // reject
             console.log(`error conflict for timing for restaurant working hours`);
-            return;
+            return new APIResponse({
+                restaurantWorkingHours: `${findTable.restaurant.startingWorkingHoursString} - ${findTable.restaurant.endingWorkingHoursString}`
+            }, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `reservation cannot be done due timing conflicts with restaurant working hours`)]);
         }
 
         const findReservationConflictResponse = await reservationServices.findReservationConflict(id, reservationData);
         // check if table have any reservation conflicts 
         if (findReservationConflictResponse.length > 0) {
-            return { message: 'conflicts', list: findReservationConflictResponse };
+            return new APIResponse({
+                conflictsList: findReservationConflictResponse
+            }, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `reservation cannot be done due timing conflicts with other reservations`)]);
         }
 
         // choose table before enter create reservation controller
@@ -46,45 +53,73 @@ export const reserveTable = async (id: string, reservationData: Reservation) => 
         // do business logic before moving ahead, check, if the reservation conflicts with restaurant working hours, then if the table have reservation at that time.
         const reservationResponse = await reservationServices.createReservation(findTable, reservationData);
         if (!reservationResponse) {
-            console.log(`cloud not find table suitable for given conditions`);
-            return
+            return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.NOT_FOUND, `Reservation failed`)]);
         }
-        return reservationResponse;
+        return new APIResponse(
+            {
+                message: `reservation with id: ${reservationResponse.id} was created`,
+                reservation: reservationResponse
+            }
+            , HttpStatus.CREATED.code);;
     } catch (error) {
         console.error(`error occurred at reservations controllers, at reserveTable, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 };
 
-export const getReservationById = async (id: string) => {
+export const getReservationById = async (id: string): Promise<APIResponse> => {
     try {
-        return await reservationServices.getReservationById(id);
+        const findReservation: Reservation = await reservationServices.getReservationById(id);
+        if (!findReservation) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation with id: ${id} was not found`)]);
+        }
+        return new APIResponse({ reservation: findReservation }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at getReservationById, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 };
 
-export const updateReservationById = async (id: string, body: Reservation) => {
+export const updateReservationById = async (id: string, body: Reservation): Promise<APIResponse> => {
     try {
-        return await reservationServices.updateReservationById(id, body);
+        const updateReservationResult = await reservationServices.updateReservationById(id, body);
+        if (updateReservationResult.affected === 0) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation update with id: ${id} cannot be done at this time`)]);
+        }
+        return new APIResponse({
+            message: 'reservation data updated successfully'
+        }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at getReservationById, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 
 };
-export const deleteReservationById = async (id: string) => {
+export const deleteReservationById = async (id: string): Promise<APIResponse> => {
     try {
-        return await reservationServices.deleteReservationById(id);
+        const deleteReservationResult = await reservationServices.deleteReservationById(id);
+        if (deleteReservationResult.affected === 0) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation deletion with id: ${id} cannot be done at this time`)]);
+        }
+        return new APIResponse({
+            message: 'reservation data deleted successfully'
+        }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at deleteReservationById, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 };
 
-export const listAllAvailableReservations = async (id: string, reservationData: Reservation) => {
+export const listAllAvailableReservations = async (id: string, reservationData: Reservation): Promise<APIResponse> => {
     try {
         const findRestaurant = await restaurantServices.getRestaurantById(id);
+        if (!findRestaurant) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `restaurant with id: ${id} was not found`)]);
+        }
         const response = await reservationServices.listAllAvailableReservations(findRestaurant, reservationData);
-        return response;
+        return new APIResponse(response, HttpStatus.OK.code);
     } catch (error) {
-        console.error(`error occurred at reservation controllers, at listAllAvailableReservations, error: ${error}`)
+        console.error(`error occurred at reservation controllers, at listAllAvailableReservations, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 }

@@ -18,5 +18,5 @@ router.get(`/reservations`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Re
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
 });
-export default { router: router, path: 'admin/authenticated' } as Routes;
+export default { router: router, path: 'admin' } as Routes;
 
