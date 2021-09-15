@@ -1,6 +1,6 @@
 
 import Reservation from "../models/reservation.model";
-import { DeleteResult, getRepository, UpdateResult } from 'typeorm';
+import { DeleteResult, getRepository, Not, UpdateResult } from 'typeorm';
 import Table from '../models/table.model';
 import Restaurant from "../models/restaurant.model";
 import * as tableServices from './table.service';
@@ -127,19 +127,19 @@ export const listAllAvailableReservations = async (restaurant: Restaurant, reser
         }
         const availableTimeSlots: any = {};
         availableTimeSlots.tables = [];
-        console.log(pickTableForReservationResponse);
         for (const table of pickTableForReservationResponse) {
             // means there is no reservations so from now till the end of the restaurant's working hour should be available
             if (table.reservations.length === 0) {
                 availableTimeSlots.tables.push({
                     table: {
                         ...table,
+                        // should not conflicts with restaurant hours
                         availability: [`${dayjs(new Date()).format('HH:mm')} - ${dayjs(restaurant.endingWorkingHoursDate).format('HH:mm')}`]
                     },
 
                 });
             } else {
-                // TODO: complete
+                // Have starting date called now, then check if there is reservation so make availability from that end to the next, so again find next and so on till length is zero then make it to rest
             }
         }
         return availableTimeSlots;
@@ -179,7 +179,8 @@ export const findReservationConflict = async (id: string, reservationDetails: Re
                 { table: findTable, staringHoursDate: reservationDetails.staringHoursDate, endingHoursDate: reservationDetails.endingHoursDate },
                 { table: findTable, staringHoursDate: reservationDetails.staringHoursDate },
                 { table: findTable, endingHoursDate: reservationDetails.endingHoursDate },
-            ]
+            ],
+            order: {staringHoursDate: 'ASC' }
         });
         return conflictsResponse;
     } catch (error) {

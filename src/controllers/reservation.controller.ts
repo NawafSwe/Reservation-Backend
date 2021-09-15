@@ -18,6 +18,7 @@ export const reserveTable = async (id: string, reservationData: Reservation) => 
             // return not found
             return;
         }
+        // if capacity not matching conditions, throw an error
         // converting time into hours for human readable dates 24 hours system
         const reservationStartingDateString = dayjs(reservationData.staringHoursDate).format('HH:mm');
         const reservationEndingDateString = dayjs(reservationData.endingHoursDate).format('HH:mm');
