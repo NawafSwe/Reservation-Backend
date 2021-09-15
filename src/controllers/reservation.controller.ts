@@ -87,7 +87,7 @@ export const updateReservationById = async (id: string, body: Reservation): Prom
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation update with id: ${id} cannot be done at this time`)]);
         }
         return new APIResponse({
-            message: 'reservation data updated successfully'
+            message: `reservation data updated successfully, with id: ${id}`
         }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at getReservationById, error: ${error}`);
@@ -102,7 +102,7 @@ export const deleteReservationById = async (id: string): Promise<APIResponse> =>
             return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `reservation deletion with id: ${id} cannot be done at this time`)]);
         }
         return new APIResponse({
-            message: 'reservation data deleted successfully'
+            message: `reservation data deleted successfully, with id: ${id}`
         }, HttpStatus.OK.code);
     } catch (error) {
         console.error(`error occurred at reservation controllers, at deleteReservationById, error: ${error}`);

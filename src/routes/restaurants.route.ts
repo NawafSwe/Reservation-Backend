@@ -7,7 +7,7 @@ import * as validations from '../utils/validations/restaurantValidations/index';
 router.get(`/`, async (req: Request, res: Response) => {
     try {
         const response = await controllers.getAllRestaurants();
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
@@ -15,7 +15,7 @@ router.get(`/`, async (req: Request, res: Response) => {
 router.post(`/`, [validations.createRestaurantValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.createRestaurant(req.body);
-        res.status(201).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }
@@ -24,7 +24,7 @@ router.post(`/`, [validations.createRestaurantValidation], async (req: Request, 
 router.get(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getRestaurantById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
@@ -33,7 +33,7 @@ router.get(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req
 router.delete(`/:id`, [validations.getOrDeleteRestaurantByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteRestaurantById(req.params.id);
-        res.status(200).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.path}, error: ${error}`);
     }
@@ -44,7 +44,7 @@ router.put(`/:id`,
     async (req: Request, res: Response) => {
         try {
             const response = await controllers.updateRestaurantById(req.params.id, req.body);
-            res.status(200).json(response);
+            res.status(response.status).json(response);
         } catch (error) {
             console.error(`error occurred at route, ${req.path}, error: ${error}`);
         }
