@@ -30,15 +30,15 @@ describe('testing get all restaurants functionality', () => {
     */
     test('get restaurants successfully, returning 200 STATUS', async () => {
         await agent.post(url)
-        .set('auth', userAuth.token)
-        .send(
-            {
-                "name": "Labira",
-                "startingWorkingHoursDate": "2021-09-10 10:00:00",
-                "endingWorkingHoursDate": "2021-09-10 23:59:00"
+            .set('auth', userAuth.token)
+            .send(
+                {
+                    "name": "Labira",
+                    "startingWorkingHoursDate": "2021-09-10 10:00:00",
+                    "endingWorkingHoursDate": "2021-09-10 23:59:00"
 
-            }
-        ).expect(HttpStatus.CREATED.code);
+                }
+            ).expect(HttpStatus.CREATED.code);
         const response = await agent.get(url)
             .set('auth', userAuth.token)
             .expect(HttpStatus.OK.code);
@@ -48,6 +48,13 @@ describe('testing get all restaurants functionality', () => {
         // we have added a restaurant
         expect(response.body.data.restaurants.length).toBeGreaterThan(0);
         return response;
+    });
+
+    /**
+    * @description failed getting restaurants due unauthenticated error
+    */
+    test('failed getting restaurants, returning 401 STATUS', async () => {
+        return await agent.get(url).expect(HttpStatus.UNAUTHORIZED.code);
     });
 
     /**
