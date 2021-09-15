@@ -19,7 +19,7 @@ export const createRestaurant = async (restaurant: Restaurant) => {
         restaurant.startingWorkingHoursString = dayjs(restaurant.startingWorkingHoursDate).format('HH:mm');
         restaurant.endingWorkingHoursString = dayjs(restaurant.endingWorkingHoursDate).format('HH:mm');
         const createRestaurantResponse = await restaurantServices.createRestaurant(restaurant);
-        if (!createRestaurantResponse.id) {
+        if (!createRestaurantResponse) {
             return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `failed in creating restaurant`)]);
         }
         return new APIResponse({ restaurant: createRestaurantResponse }, HttpStatus.CREATED.code);
@@ -32,8 +32,8 @@ export const createRestaurant = async (restaurant: Restaurant) => {
 export const getRestaurantById = async (id: string): Promise<APIResponse> => {
     try {
         const findRestaurant = await restaurantServices.getRestaurantById(id);
-        if (!findRestaurant.id) {
-            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.CONFLICT, `restaurant with ${id}, could not be located`)]);
+        if (!findRestaurant) {
+            return new APIResponse({}, HttpStatus.NOT_FOUND.code, [new APIError(HttpStatus.NOT_FOUND, `restaurant with ${id}, could not be located`)]);
         }
         return new APIResponse({ restaurant: findRestaurant }, HttpStatus.OK.code);
     } catch (error) {
