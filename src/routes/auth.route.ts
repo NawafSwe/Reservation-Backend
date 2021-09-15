@@ -6,7 +6,10 @@ const router: Router = Router();
 router.post(`/login`, async (req: Request, res: Response) => {
     try {
         const response = await authServices.login(req.body);
-        res.status(200).json(response);
+        // if logged in successfully set token
+        response.status === 200 ? res.setHeader('token', response.data.token) && delete response.data.token
+            : null;
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route ${req.url}, error: ${error}`);
     }
