@@ -49,7 +49,7 @@ router.post('/addAdmin', userValidations.createUserValidation, async (req: Reque
             ...req.body, role: Roles.ADMIN
         });
         // if user created then send the token in the headers
-        res.status(201).json(response);
+        res.status(response.status).json(response);
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error`);
     }

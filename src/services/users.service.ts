@@ -24,6 +24,15 @@ export const getUserById = async (id: string): Promise<User | never> => {
 };
 export const createUser = async (user: UserDto): Promise<any | never> => {
     try {
+        const isFound = await getRepository(User).find({
+            where: {
+                empNumber: user.empNumber
+            }
+        });
+        // duplication
+        if (isFound.length > 0) {
+            throw new Error(`duplication employee number`);
+        }
         const userRepository = getRepository(User);
         const createUserResponse = userRepository.create(user);
         // if failed means empNumber is already in use

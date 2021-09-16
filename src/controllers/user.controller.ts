@@ -1,6 +1,7 @@
 import * as userServices from '../services/users.service';
 import UserDto from '../dtos/user.dto';
 import { hashPassword } from '../utils/password.util';
+import { HttpStatus, APIResponse, APIError } from '../utils/serverUtils/index';
 export const getAllUsers = async () => {
     try {
         const response = await userServices.getAllUsers();
@@ -20,11 +21,15 @@ export const getUserById = async (id: string) => {
 };
 export const createUser = async (user: UserDto) => {
     try {
+
         // check if user exist or no 
         // hash password
         user.password = await hashPassword(user.password)
         const response = await userServices.createUser(user);
-        return response;
+        if (!response) {
+            return new APIResponse({}, HttpStatus.CONFLICT.code, [new APIError(HttpStatus.CONFLICT, `Cloud not create user, due duplicated employee number`)])
+        }
+        return new APIResponse({ message: 'User created' }, HttpStatus.CREATED.code);
     } catch (error) {
         console.error(`error occurred, at users controllers at createUser, error : ${error}`);
     }
