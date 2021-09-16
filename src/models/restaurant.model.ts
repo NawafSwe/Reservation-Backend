@@ -21,6 +21,7 @@ export default class Restaurant {
     @Column()
     endingWorkingHoursDate: Date;
 
+    // handling tables of restaurant
     @OneToMany(() => Table, (table: Table) => table.restaurant)
     @JoinColumn()
     tables: Array<Table>;

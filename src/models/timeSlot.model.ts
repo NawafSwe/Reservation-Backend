@@ -16,6 +16,7 @@ export default class TimeSlot {
     @Column()
     public endingDate: Date;
 
+    // each time slot belong to table
     @ManyToOne(() => Table, (table: Table) => table.slots)
     @JoinColumn()
     public table: Table;
