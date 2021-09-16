@@ -32,8 +32,10 @@ router.get('/pagination/reservation', async (req: Request, res: Response) => {
             const response = await reservationControllers.getAllReservations(skip, to, req.body.period);
             res.status(response.status).json(response);
         }
-        const response = await reservationControllers.getAllReservations();
-        res.status(response.status).json(response);
+        else {
+            const response = await reservationControllers.getAllReservations();
+            res.status(response.status).json(response);
+        }
     } catch (error) {
         console.error(`error occurred at route, ${req.url}, error: ${error}`);
     }

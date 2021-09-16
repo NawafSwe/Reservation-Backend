@@ -20,10 +20,10 @@ services:
       - ./:/usr/app
     command: npm run start:dev
   database:
-    image: postgres:9.6-alpine
+    image: postgres:10.5
     environment:
-      - POSTGRES_USER=dummy
-      - POSTGRES_PASSWORD=bummy
+      - POSTGRES_USER=nawaf7
+      - POSTGRES_PASSWORD=nawaf7100
       - POSTGRES_DB=restaurants
     ports:
       - 5432:5432

@@ -5,11 +5,7 @@ import userRoute from '../../routes/users.route';
 import tableRoute from '../../routes/table.route';
 import reservationRoute from '../../routes/reservation.route';
 import adminRoute from '../../routes/admin.route';
-
-const dotenv = require('custom-env');
 const getServer = () => {
-    process.env.NODE_ENV = 'testing';
-    dotenv.env(process.env.NODE_ENV);
     const app = express();
     app.use(express.json());
     app.use(`/${restaurantRouter.path}`, restaurantRouter.router);

@@ -17,7 +17,7 @@ describe('testing update by id table functionality', () => {
 
         await dbConnection();
         app = getServer();
-        app.listen(process.env.PORT, () => {
+        app.listen(process.env.TESTING_SERVER_PORT, () => {
             console.log(`server running for testing`);
         });
         agent = supertest(app);

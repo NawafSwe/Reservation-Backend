@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "NODE_ENV=testing jest --testTimeout=600000 --runInBand --coverage --detectOpenHandles --forceExit",
+    "test-restaurants":"NODE_ENV=testing jest src/utils/tests/restaurantsTests --testTimeout=600000 --runInBand --coverage --detectOpenHandles --forceExit",
     "start:dev": "NODE_ENV=development nodemon src/index.ts",
     "start:prod": "NODE_ENV=production node dist/index.js",
     "start:staging": "NODE_ENV=staging node dist/index.js",
@@ -75,8 +76,6 @@
   "clearMocks": true,
   "maxWorkers": 1,
   "preset": "ts-jest",
-  "testEnvironment": "node",
-  "test-ci": "jest --ci"
-    
+  "testEnvironment": "node"
   }
 }

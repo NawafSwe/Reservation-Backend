@@ -3,7 +3,8 @@ import getServer from '../testingServer';
 import supertest from 'supertest';
 import dbConnection from '../../../config/db.config';
 import closeConnection from '../../../config/closeConnection.config';
-import { adminBody } from '../prepareUsers'
+import { adminBody } from '../prepareUsers';
+import env from 'dotenv';
 describe('testing get all restaurants functionality', () => {
     let agent, app;
     const url = '/restaurants';
@@ -13,9 +14,11 @@ describe('testing get all restaurants functionality', () => {
      */
     beforeAll(async () => {
 
+        process.env.NODE_ENV = 'testing';
+        env.config();
         await dbConnection();
         app = getServer();
-        app.listen(process.env.PORT, () => {
+        app.listen(process.env.TESTING_SERVER_PORT, () => {
             console.log(`server running for testing`);
         });
         agent = supertest(app);
