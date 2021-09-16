@@ -153,3 +153,14 @@ export const listAllAvailableReservations = async (id: string): Promise<APIRespo
         return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 }
+
+export const getAllReservations = async (skip?: number, to?: number, period?: Date) => {
+    try {
+        const response = await reservationServices.getAllReservations(skip, to, period);
+        return new APIResponse(response, HttpStatus.OK.code);
+    } catch (error) {
+        console.error(`error occurred at reservation controllers, at listAllAvailableReservations, error: ${error}`);
+        return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
+    }
+}
+}

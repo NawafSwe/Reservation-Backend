@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  server:
+    image: node:current-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    links:
+         - database
+    ports:
+     - 7070:7070
+    environment:
+      - NODE_ENV=development
+      - NODE_ENV=testing
+    networks:
+      - server-network
+    build:
+      context: .
+    volumes:
+      - ./:/usr/app
+    command: npm run start:dev
+  database:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_USER=dummy
+      - POSTGRES_PASSWORD=bummy
+      - POSTGRES_DB=restaurants
+    ports:
+      - 5432:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data 
+    networks:
+       - server-network
+
+
+volumes:
+  database-data: {}
+networks:
+  server-network:
+    driver: bridge
+
+  

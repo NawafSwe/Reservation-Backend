@@ -4,7 +4,7 @@
   "description": "Backend system solve restaurant reservation problem",
   "main": "src/index.ts",
   "scripts": {
-    "test": "jest --testTimeout=600000 --runInBand --coverage --detectOpenHandles --forceExit",
+    "test": "NODE_ENV=testing jest --testTimeout=600000 --runInBand --coverage --detectOpenHandles --forceExit",
     "start:dev": "NODE_ENV=development nodemon src/index.ts",
     "start:prod": "NODE_ENV=production node dist/index.js",
     "start:staging": "NODE_ENV=staging node dist/index.js",
