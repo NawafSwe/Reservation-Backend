@@ -44,6 +44,23 @@ I managed to create the following entities in the database:
 
 # Algorithm procedure 🤝:
 below a flowchart diagram that explain the reservation process
-
-
 <img src="./assets/Algorithm.jpeg"/>
+
+# endpoints:
+there are 6 based routers: 
+* admin route: holds admin functionality such as listing all reservations with some additional options, and creating a user with authority level of employee.
+* auth route: holds the functionality of authentication, to obtain a jwt token sent within the response header.
+* index route: router to inject some basic endpoints such as checking backend health. 
+* reservation route: router responsible for reservation collection model GET/PUT/DELETE/POST.
+* restaurant route: router responsible for restaurant collection model GET/PUT/DELETE/POST.
+* table route:  router responsible for table collection model GET/PUT/DELETE/POST.
+* users route: router responsible for table collection model GET/PUT/DELETE/POST.
+
+# Validations:
+All routers have middlewares to check and validate before hitting the business logic and database status.
+so to consume the api you must be authenticated and some endpoints you must be authorized to consume the resources
+
+# Testing with POSTMAN: 
+To be able to test with post man you have to be authenticated, so first thing you do is to create an admin from the admin endpoint, `/admin/addAdmin`, then hit the endpoint login `api/auth/login` and obtain the token from the response header and consume it as `auth` header on all your requests.
+
+
