@@ -18,7 +18,7 @@ export const getAllReservations = async (skip?: number, take?: number, period?: 
     try {
 
         const reservationRepository = getRepository(Reservation);
-        if (skip && take) {
+        if (skip && take && period) {
             return await reservationRepository.findAndCount({
                 skip, take, relations: ['table'], where: {
                     createdAtString: dayjs(period != null ? period : new Date()).format('DD/MM/YYYY')
