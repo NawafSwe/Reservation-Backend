@@ -1,0 +1,688 @@
+{
+	"info": {
+		"_postman_id": "c011bdd1-e21c-4498-b805-0833d84c55e3",
+		"name": "restaurant-reservation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "restaurants",
+			"item": [
+				{
+					"name": "post restaurant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyYjEzZWU0My0zMjVhLTQ3NWEtOGJkMS02N2M2ZWMyMjVhZmQiLCJ1c2VybmFtZSI6MTI0MiwiaWF0IjoxNjMxNzY0NDQwLCJleHAiOjE2MzE3ODYwNDB9.8rZD224Fbi4GTCRbGzJY2XEDWffpeJiXs2_3BN0bTBI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Labira\",\n    \"startingWorkingHoursDate\":\"2021-09-10 10:00:00\",\n    \"endingWorkingHoursDate\":\"2021-09-10 23:59:00\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/restaurants",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get restaurant by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}//restaurants/82700c8e-824d-44f9-9ce7-34b3026dab94",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"",
+								"restaurants",
+								"82700c8e-824d-44f9-9ce7-34b3026dab94"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all restaurants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhOWI4ZDIzMS05YTRlLTQwZTgtYmUyYi01ZmViZDNiMmRmZTkiLCJ1c2VybmFtZSI6MTIzNCwiaWF0IjoxNjMxNzM0MDQ5LCJleHAiOjE2MzE3NTU2NDl9.UXmRb-DDaKfWJdcDb-Kln2_h96SieHbHuKxy1RDSL3Y",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/restaurants",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update restaurant",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startingWorkingHoursDate\":\"2021-09-10 09:30:00\",\n    \"name\":\"some kind\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/restaurants/de88e440-b99f-4282-8f28-a1b7c6ef5a7",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"restaurants",
+								"de88e440-b99f-4282-8f28-a1b7c6ef5a7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete restaurant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/restaurants/2ccf7ecf-9ad5-4de7-ba9e-de59b06f0d36",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"restaurants",
+								"2ccf7ecf-9ad5-4de7-ba9e-de59b06f0d36"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tables",
+			"item": [
+				{
+					"name": "get all tables",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkZjEyYzA4Mi1kYTVhLTQ4OTQtYjJiNi03NDdmOTA5YWM2ZDkiLCJ1c2VybmFtZSI6MTIzNCwiaWF0IjoxNjMxNzMyMDU5LCJleHAiOjE2MzE3NTM2NTl9.RbW6k9E_62eXmyWj_aUO_8gVn1MeAZpHc_i-7Gjs-4s",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/tables",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new table",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyYjEzZWU0My0zMjVhLTQ3NWEtOGJkMS02N2M2ZWMyMjVhZmQiLCJ1c2VybmFtZSI6MTI0MiwiaWF0IjoxNjMxNzY0NDQwLCJleHAiOjE2MzE3ODYwNDB9.8rZD224Fbi4GTCRbGzJY2XEDWffpeJiXs2_3BN0bTBI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\":\"09a8e3a2-53af-4498-a77c-58d68f1135d1\",\n    \"capacity\":2,\n    \"tableNumber\":6,\n    \"slots\":[\n        {\n        \"startingDate\":\"2021-09-10 13:00:00\",\n        \"endingDate\":\"2021-09-10 14:00:00\"\n\n         },\n                 {\n        \"startingDate\":\"2021-09-10 15:00:00\",\n        \"endingDate\":\"2021-09-10 16:00:00\"\n\n                 },\n                         {\n        \"startingDate\":\"2021-09-10 17:00:00\",\n        \"endingDate\":\"2021-09-10 18:00:00\"\n\n         },\n                 {\n        \"startingDate\":\"2021-09-10 19:00:00\",\n        \"endingDate\":\"2021-09-10 20:00:00\"\n\n         }\n\n\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/tables",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update table",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"capacity\":12\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}tables/6738eb3a-03f3-454f-ba07-66c0a6a6a367",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}tables",
+							"path": [
+								"6738eb3a-03f3-454f-ba07-66c0a6a6a367"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get table by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/tables/1",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"tables",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete table",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/tables/eb11af1e-3bf3-458c-9fc4-28d18be614ed",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"tables",
+								"eb11af1e-3bf3-458c-9fc4-28d18be614ed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reservations",
+			"item": [
+				{
+					"name": "get all reservations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjJkYzFhZS05ZmI4LTQyOGMtOGRjZC1jNTQzZDAwZjI1NDIiLCJ1c2VybmFtZSI6MTIzNCwiaWF0IjoxNjMxNzM3MDcxLCJleHAiOjE2MzE3NTg2NzF9.lTJNls6lNe-UgcEIwAOH7R2kMRKToi-WlMVsLW8l3I0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyYjEzZWU0My0zMjVhLTQ3NWEtOGJkMS02N2M2ZWMyMjVhZmQiLCJ1c2VybmFtZSI6MTI0MiwiaWF0IjoxNjMxNzY0NDQwLCJleHAiOjE2MzE3ODYwNDB9.8rZD224Fbi4GTCRbGzJY2XEDWffpeJiXs2_3BN0bTBI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"staringHoursDate\":\"2021-09-10 13:00:00\",\n    \"endingHoursDate\":\"2021-09-10 14:00:00\",\n    \"numberOfClients\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations/18904ca2-49fa-4b6b-be95-89b9f53e3641",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations",
+								"18904ca2-49fa-4b6b-be95-89b9f53e3641"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete reservation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations/b29ac5ef-8d2d-434c-bd7f-0dd37d228343",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations",
+								"b29ac5ef-8d2d-434c-bd7f-0dd37d228343"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get reservation by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations/1",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all available reservations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\":\"6d94f92b-97bb-4cc9-9c28-88122341ef26\",\n    \"staringHoursDate\":\"2021-09-10 09:30:00\",\n    \"endingHoursDate\":\"2021-09-10 09:50:00\",\n    \"numberOfClients\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations?by=timeSlots",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "by",
+									"value": "timeSlots"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update reservation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0MjJkYzFhZS05ZmI4LTQyOGMtOGRjZC1jNTQzZDAwZjI1NDIiLCJ1c2VybmFtZSI6MTIzNCwiaWF0IjoxNjMxNzM3MDcxLCJleHAiOjE2MzE3NTg2NzF9.lTJNls6lNe-UgcEIwAOH7R2kMRKToi-WlMVsLW8l3I0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"staringHoursDate\": \"2021-09-10 15:00:00\",\n    \"endingHoursDate\": \"2021-09-10 16:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/reservations/1a6cee2f-fa32-441f-8c10-121cae978477",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"reservations",
+								"1a6cee2f-fa32-441f-8c10-121cae978477"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "get All users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMGU0MzhkNC0xM2ZiLTQxNmYtYTQ2My0zODU0NWJlOGU0NmEiLCJ1c2VybmFtZSI6MTI0LCJpYXQiOjE2MzE2MzY2NTksImV4cCI6MTYzMTY1ODI1OX0.pwgaL2VXpn_C0dtRBji0rgPspOfuJLsz6MJn75tMU1M",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"empNumber\": 1234,\n    \"password\":\"123455\",\n    \"role\":\"ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users/1",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "put user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role\":\"ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users/ba5d90b1-121a-4908-974a-460d34db7777",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users",
+								"ba5d90b1-121a-4908-974a-460d34db7777"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users/01384ba6-e866-4a06-b53a-bc3c19d32228",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users",
+								"01384ba6-e866-4a06-b53a-bc3c19d32228"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"empNumber\": 1242,\n    \"password\": \"123455\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/api/auth/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "find all reservations for today",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1NWUyYy0wZTgwLTQ1ZGYtYjhkZS04ZDQ0YmQ2NmQ5MDUiLCJ1c2VybmFtZSI6MTI0LCJpYXQiOjE2MzE3MTAyNTksImV4cCI6MTYzMTczMTg1OX0.v-lrpiO90tpGtwjfNZTTcVdB5ib3hXT-Ed0xAe9m_HQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\":\"ec03ad7e-f69f-43ce-b72a-dc9877cf5a32\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/admin/reservations",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"admin",
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"empNumber\": 1242,\n    \"password\": \"123455\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/admin/addAdmin",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"admin",
+								"addAdmin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
