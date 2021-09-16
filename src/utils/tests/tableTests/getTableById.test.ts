@@ -22,10 +22,14 @@ describe('testing get table by id functionality', () => {
         });
         agent = supertest(app);
         // prepare a user to be authenticated as ADMIN 
-        await agent.post('/users').send(adminBody).expect(HttpStatus.CREATED.code);
-        await agent.post('/users').send(employeeBody).expect(HttpStatus.CREATED.code);
+        await agent.post('/admin/addAdmin').send(adminBody).expect(HttpStatus.CREATED.code);
         const authenticationResponse = await agent.post('/api/auth/login').send({ empNumber: adminBody.empNumber, password: adminBody.password, }).expect(HttpStatus.OK.code);
         userAuth = { token: authenticationResponse.headers.token };
+
+        await agent.post('/users')
+        .set('auth', userAuth.token)
+        .send(employeeBody)
+        .expect(HttpStatus.CREATED.code);
         const employeeAuthenticationResponse = await agent.post('/api/auth/login').send({ empNumber: employeeBody.empNumber, password: employeeBody.password, }).expect(HttpStatus.OK.code);
         employeeAuth = { token: employeeAuthenticationResponse.headers.token };
     });

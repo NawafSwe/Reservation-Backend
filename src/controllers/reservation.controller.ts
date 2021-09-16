@@ -163,4 +163,3 @@ export const getAllReservations = async (skip?: number, to?: number, period?: Da
         return new APIResponse({}, HttpStatus.BAD_REQUEST.code, [new APIError(HttpStatus.BAD_REQUEST, error.message)]);
     }
 }
-}

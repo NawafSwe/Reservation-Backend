@@ -3,7 +3,8 @@ import Routes from '@interfaces/routes.interface';
 import * as controllers from '../controllers/user.controller';
 import { checkRole } from '../middlewares/checkRole.middleware';
 import { checkJwt } from '../middlewares/checkToken.middleware';
-import { Roles } from '../utils/types/roles.types'
+import { Roles } from '../utils/types/roles.types';
+import * as validations from '../utils/validations/usersValidations/index';
 const router: Router = Router();
 router.get(`/`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Request, res: Response) => {
     try {
@@ -14,7 +15,7 @@ router.get(`/`, [checkJwt, checkRole([Roles.ADMIN])], async (req: Request, res: 
     }
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', [checkJwt, checkRole([Roles.ADMIN, Roles.EMPLOYEE]), validations.deleteOrGetUserByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.getUserById(req.params.id);
         res.status(200).json(response);
@@ -23,7 +24,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.post(`/`, async (req: Request, res: Response) => {
+router.post(`/`, [checkJwt, checkRole([Roles.ADMIN]), validations.createUserValidation], async (req: Request, res: Response) => {
     try {
 
         const response = await controllers.createUser(req.body);
@@ -34,7 +35,7 @@ router.post(`/`, async (req: Request, res: Response) => {
     }
 });
 
-router.put(`/:id`, async (req: Request, res: Response) => {
+router.put(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.deleteOrGetUserByIdValidation, validations.updateUserValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.updateUserById(req.params.id, req.body);
         res.status(200).json(response);
@@ -43,7 +44,7 @@ router.put(`/:id`, async (req: Request, res: Response) => {
     }
 });
 
-router.delete(`/:id`, async (req: Request, res: Response) => {
+router.delete(`/:id`, [checkJwt, checkRole([Roles.ADMIN]), validations.deleteOrGetUserByIdValidation], async (req: Request, res: Response) => {
     try {
         const response = await controllers.deleteUserById(req.params.id);
         res.status(200).json(response);
