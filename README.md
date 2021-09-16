@@ -34,4 +34,16 @@ to test the project while you are running it on a container, go to other tap in 
 Congratulations you have tested all the functionalities of the project 🤩.
 Feel free to explore the tests written all the code is documented for each case what should it do and what.
 
+# How the problem was solved 🤓: 
+The problem mainly focused on how to manage time slots and prevent any reservation conflict happened with restaurant timing or other reservation timing.
+I managed to create the following entities in the database:
+* restaurant model which will have restaurant name, tables,working hours. 
+* table model which will holds the restaurant info, reservations info, time slots table does have for reservation.
+* timeSlot model which will have time info and table info to manage the reservation process and can check for conflicts and future reservations.
+* user model which will have employee number and its role whether admin or employee and finally his password. 
 
+# Algorithm procedure 🤝:
+below a flowchart diagram that explain the reservation process
+
+
+<img src="/Users/nawafbader/Downloads/Algorithm.pdf"/>
