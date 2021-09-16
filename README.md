@@ -46,4 +46,4 @@ I managed to create the following entities in the database:
 below a flowchart diagram that explain the reservation process
 
 
-<img src="./assets/Algorithm.pdf"/>
+<img src="./assets/Algorithm.jpeg"/>
