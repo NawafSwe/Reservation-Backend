@@ -1,16 +1,14 @@
-import { httpStatus } from './httpStatus';
 /**
  * @module APIError
- * @requires httpStatus
  * @description module holds centralized server error.
  */
 
 
 export default class APIError extends Error {
-    public name;
-    public statusCode;
-    public isOperational;
-    public description;
+    public name:string;
+    public statusCode:number;
+    public isOperational:boolean;
+    public description:string;
 
     /**
      * @param {Object<httpStatus>} http

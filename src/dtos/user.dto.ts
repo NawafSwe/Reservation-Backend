@@ -1,5 +1,5 @@
 import { Roles } from '../utils/types/roles.types';
-import { Min, IsInt, Max, Contains, ValidateIf, isNotEmpty } from 'class-validator';
+import { Min, IsInt, Max, Contains, ValidateIf } from 'class-validator';
 export default class UserDto {
     public id: string;
     public username:string;
@@ -9,7 +9,7 @@ export default class UserDto {
     public empNumber: number;
     @Min(6, { message: 'Password must be 6 chars long at least' })
     public password: string;
-    @ValidateIf(val => val.value === Roles.ADMIN || val.value === Roles.BASIC)
+    @ValidateIf(val => val.value === Roles.ADMIN || val.value === Roles.EMPLOYEE)
     public role: Roles
 }
 
