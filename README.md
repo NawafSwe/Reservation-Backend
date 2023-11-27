@@ -1,4 +1,4 @@
-# Reservation BACKEND SYSTEM 🚀 - Sary Assessment.
+# Reservation BACKEND SYSTEM 🚀.
 This is a Simple Backend system handles a restaurant reservation with time slots 🌮.
 
 # Project structure 
